@@ -1,0 +1,5 @@
+npx supabase gen types typescript --project-id vytqypgbcbtkuykebodm --schema public > lib/supabase/database.types.ts
+
+run docker 
+to add new migrations supabase db pull
+for single commit supabase db diff -f my_table --linked

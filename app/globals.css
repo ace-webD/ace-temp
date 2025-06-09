@@ -1,0 +1,258 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Colors - these will generate utilities like bg-background, text-primary etc. */
+  /* Values are taken from your :root and .dark selectors */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Container */
+  --container-padding: 1.5rem;
+  --container-2xl: 1400px;
+
+  /* Border Radius */
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  /* Your existing --radius variable is in :root, ensure it's defined before this block if moved */
+
+  /* Animations & Keyframes */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-collapsible-down: collapsible-down 0.2s ease-in-out;
+  --animate-collapsible-up: collapsible-up 0.2s ease-in-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes collapsible-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
+  }
+  @keyframes collapsible-up {
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* *=========== Blue Theme =========== */
+/* Removed @layer base from here */
+:root {
+  --background: 210 40% 98%;
+  /* Very Light Cool Grey */
+  --foreground: 222 47% 18%;
+  /* Dark Desaturated Blue */
+
+  /* Glass Pane Colors (often used with transparency/blur in components) */
+  --card: 210 40% 99%;
+  /* Slightly Off-White */
+  --card-foreground: 222 47% 20%;
+  /* Dark Desaturated Blue */
+  --popover: 210 40% 99%;
+  /* Slightly Off-White */
+  --popover-foreground: 222 47% 20%;
+  /* Dark Desaturated Blue */
+
+  /* Accent Colors */
+  --primary: 208 95% 48%;
+  /* Vibrant Blue */
+  --primary-foreground: 0 0% 100%;
+  /* White */
+
+  /* Secondary/Muted Tones */
+  --secondary: 210 40% 94%;
+  /* Light Grey */
+  --secondary-foreground: 222 47% 30%;
+  /* Medium Desaturated Blue */
+  --muted: 210 40% 94%;
+  /* Light Grey */
+  --muted-foreground: 215 30% 55%;
+  /* Muted Greyish Blue */
+
+  /* Utility Colors */
+  --accent: 210 40% 94%;
+  /* Light Grey */
+  --accent-foreground: 222 47% 30%;
+  /* Medium Desaturated Blue */
+  --destructive: 0 84.2% 60.2%;
+  /* Default Red */
+  --destructive-foreground: 0 0% 98%;
+  /* Near White */
+
+  /* Borders and Rings */
+  --border: 214 30% 88%;
+  /* Subtle Light Grey Border */
+  --input: 214 30% 88%;
+  /* Subtle Light Grey Border */
+  --ring: 208 90% 55%;
+  /* Vibrant Blue Ring */
+
+  --radius: 0.75rem;
+  /* Slightly larger radius common in glassmorphism */
+}
+
+.dark {
+  --background: 224 71% 10%;
+  /* Deep Dark Blue */
+  --foreground: 210 40% 96%;
+  /* Light Grey/Off-White */
+
+  /* Glass Pane Colors (often used with transparency/blur in components) */
+  --card: 224 71% 14%;
+  /* Dark Blue, slightly lighter than bg */
+  --card-foreground: 210 40% 94%;
+  /* Light Grey */
+  --popover: 224 71% 12%;
+  /* Darker Blue Popover */
+  --popover-foreground: 210 40% 96%;
+  /* Light Grey/Off-White */
+
+  /* Accent Colors */
+  --primary: 208 95% 58%;
+  /* Brighter Vibrant Blue for Dark Mode */
+  --primary-foreground: 224 71% 12%;
+  /* Dark Blue for contrast on primary */
+
+  /* Secondary/Muted Tones */
+  --secondary: 224 71% 18%;
+  /* Darker Greyish Blue */
+  --secondary-foreground: 210 40% 96%;
+  /* Light Grey/Off-White */
+  --muted: 224 71% 18%;
+  /* Darker Greyish Blue */
+  --muted-foreground: 215 25% 65%;
+  /* Muted Light Greyish Blue */
+
+  /* Utility Colors */
+  --accent: 224 71% 18%;
+  /* Darker Greyish Blue */
+  --accent-foreground: 210 40% 96%;
+  /* Light Grey/Off-White */
+  --destructive: 0 72% 51%;
+  /* Dark Mode Red */
+  --destructive-foreground: 0 0% 98%;
+  /* Near White */
+
+  /* Borders and Rings */
+  --border: 217 33% 25%;
+  /* Subtle Dark Border */
+  --input: 217 33% 25%;
+  /* Subtle Dark Border */
+  --ring: 208 95% 60%;
+  /* Brighter Vibrant Blue Ring */
+}
+/* End of Blue Theme variables */
+
+.shadow-light {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.085);
+}
+
+.shadow-dark {
+  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.141);
+}
+
+@layer base {
+  body {
+    /* @apply bg-background text-foreground; */
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  }
+
+  @media (min-width: 1536px) { /* 2xl */
+    .container {
+      max-width: var(--container-2xl);
+    }
+  }
+}
+
+.glitch-text {
+  position: relative;
+  animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+  0% {
+    text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+      -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  14% {
+    text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+      -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  15% {
+    text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+      0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  49% {
+    text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+      0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  50% {
+    text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+      0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  99% {
+    text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+      0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  100% {
+    text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75),
+      -0.025em -0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+}
