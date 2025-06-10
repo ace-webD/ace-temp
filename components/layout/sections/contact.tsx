@@ -111,7 +111,6 @@ export const ContactSection = () => {
               <div>SASTRA Deemed University</div>
               <div>Thirumalaisamudram, Thanjavur, Tamil Nadu 613401</div>
             </div>
-     
 
             <div>
               <div className="flex gap-2 mb-1">
