@@ -37,7 +37,7 @@ const missionList: MissionProps[] = [
 
 export const MissionSection = () => {
   return (
-    <section id="Mission" className="container py-24 sm:py-32">
+    <section id="Mission" className="container py-16 sm:py-24">
       <div className="grid lg:grid-cols-2 place-items-center lg:gap-24">
         <div>
           <h2 className="text-lg text-primary mb-2 tracking-wider">Mission</h2>

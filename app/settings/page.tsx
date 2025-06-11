@@ -17,7 +17,7 @@ export default async function SettingsPage() {
 
     const { data: userProfile, error: profileError } = await supabase
         .from('UserProfile')
-        .select('id, userId, name, registrationNumber, department, year, contactNumber, currentRating')
+        .select('*')
         .eq('userId', authUser.id)
         .single<UserProfile>();
 

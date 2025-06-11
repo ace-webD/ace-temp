@@ -3,11 +3,10 @@ import HeroIllustration from "@/components/icons/HeroIllustation";
 import HeroLogoWithText from "@/components/icons/HeroLogoWithText";
 import { Card, CardContent } from "@/components/ui/card";
 
-export const AboutSection = () => {
-  return (
+export const AboutSection = () => {  return (
     <section
       id="about"
-      className="py-16 md:py-24"
+      className="py-16 sm:py-24"
     >
       <div className="container">
           <div className="-mx-4 flex flex-wrap items-center justify-center lg:justify-between">

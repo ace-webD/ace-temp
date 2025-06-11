@@ -9,8 +9,7 @@ export default function NotFound() {
       </p>
       <p className="mt-2 text-gray-500 dark:text-gray-400">
         It might have been moved or deleted.
-      </p>
-      <Link href="/" className="mt-8 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+      </p>      <Link href="/" className="mt-8 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors cursor-pointer">
         Go Back Home
       </Link>
     </div>

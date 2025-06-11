@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { createClient } from '@/lib/supabase/client'; // Standard client for mutations
+import { createClient } from '@/lib/supabase/client';
 
 interface UpdateContactFormProps {
   userId: string;
@@ -15,43 +15,41 @@ interface UpdateContactFormProps {
 export default function UpdateContactForm({ userId, initialContactNumber }: UpdateContactFormProps) {
   const [contactNumber, setContactNumber] = useState<string>(initialContactNumber || '');
   const [saving, setSaving] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
-
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId) return;
-
-    setSaving(true);
-    setError(null);
+    if (!userId) return;    // Validate mobile number format (10 digits)
+    if (contactNumber && !/^[0-9]{10}$/.test(contactNumber)) {
+      toast.error('Please enter a valid 10-digit contact number.');
+      return;
+    }    setSaving(true);
 
     const { error: updateError } = await supabase
       .from('UserProfile')
       .update({ contactNumber: contactNumber || null })
-      .eq('userId', userId);
-
-    if (updateError) {
+      .eq('userId', userId);    if (updateError) {
       console.error('Error updating contact number:', updateError);
-      setError('Failed to save contact number. Please try again.');
-      toast.error('Failed to update contact number.');
+      toast.error('Failed to update contact number. Please try again.');
     } else {
       toast.success('Contact number updated successfully.');
     }
     setSaving(false);
   };
-
   return (
     <form onSubmit={handleSave} className="space-y-6 border-t border-[hsl(var(--border))] pt-6">
-      {error && <p className="mb-4 text-sm text-red-500 bg-red-100 p-2 rounded-md">{error}</p>}
       <div>
-        <Label htmlFor="contactNumber">Contact Number</Label>
-        <Input
+        <Label htmlFor="contactNumber">Contact Number</Label>        <Input
           id="contactNumber"
           type="tel"
           value={contactNumber}
-          onChange={(e) => setContactNumber(e.target.value)}
-          placeholder="Enter your contact number"
+          onChange={(e) => {
+            // Only allow numbers and limit to 10 digits
+            const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+            setContactNumber(value);
+          }}
+          placeholder="Enter your 10-digit contact number"
           className="mt-1"
+          maxLength={10}
         />
       </div>
       <Button type="submit" disabled={saving} className="cursor-pointer">

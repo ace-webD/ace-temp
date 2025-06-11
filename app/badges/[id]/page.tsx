@@ -3,18 +3,16 @@ import { Tables } from '@/lib/supabase/database.types';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge as UiBadge } from '@/components/ui/badge'; // Alias to avoid conflict
-import { ArrowLeft } from 'lucide-react'; // Removed UserCircle as it's no longer directly used in the list
+import { Badge as UiBadge } from '@/components/ui/badge';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 type Badge = Tables<'Badge'>;
-// Define a type for a user associated with a badge, including their profile information and earnedAt
 type BadgeUser = Tables<'UserBadge'> & {
   UserProfile: Pick<Tables<'UserProfile'>, 'userId' | 'name'> | null;
-  earnedAt: string; // Added earnedAt
+  earnedAt: string;
 };
 
-// Update the return type of fetchBadgeById to include users with earnedAt
 async function fetchBadgeById(id: string, supabase: any): Promise<{ badge: Badge | null; users: BadgeUser[] }> {
   const { data: badgeData, error: badgeError } = await supabase
     .from('Badge')
@@ -24,11 +22,9 @@ async function fetchBadgeById(id: string, supabase: any): Promise<{ badge: Badge
 
   if (badgeError) {
     console.error(`Error fetching badge with id ${id}:`, badgeError);
-    // If badge fetch fails, return null for badge and empty for users
     return { badge: null, users: [] }; 
   }
 
-  // Fetch users who have this badge
   const { data: usersData, error: usersError } = await supabase
     .from('UserBadge')
     .select(`
@@ -40,18 +36,16 @@ async function fetchBadgeById(id: string, supabase: any): Promise<{ badge: Badge
 
   if (usersError) {
     console.error(`Error fetching users for badge id ${id}:`, usersError);
-    // If users fetch fails, return the badge data but empty users array
     return { badge: badgeData, users: [] }; 
   }
 
   return { badge: badgeData, users: usersData as BadgeUser[] };
 }
 
-// Dynamic metadata for the page
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const supabase = await createClient();
-  const { badge } = await fetchBadgeById(resolvedParams.id, supabase); // Destructure badge from the result
+  const { badge } = await fetchBadgeById(resolvedParams.id, supabase);
 
   if (!badge) {
     return {
@@ -68,7 +62,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function BadgeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const supabase = await createClient();
-  // Destructure badge and users from the fetchBadgeById result
   const { badge, users } = await fetchBadgeById(resolvedParams.id, supabase);
 
   if (!badge) {
@@ -97,11 +90,11 @@ export default async function BadgeDetailPage({ params }: { params: Promise<{ id
       <Card className="overflow-hidden shadow-xl">
         <div className="grid md:grid-cols-3 items-start">
           <div className="md:col-span-1 p-6 bg-muted flex items-center justify-center aspect-square">
-            {publicIconUrl ? ( // Use the constructed publicIconUrl
+            {publicIconUrl ? (
               <Image
-                src={publicIconUrl} // Use the constructed publicIconUrl
+                src={publicIconUrl}
                 alt={`${badge.name} icon`}
-                width={250} // Larger size for detail page
+                width={250}
                 height={250}
                 className="object-contain rounded-md"
               />
@@ -128,21 +121,19 @@ export default async function BadgeDetailPage({ params }: { params: Promise<{ id
                   {badge.description}
                 </p>
               </div>
-              {/* Section to display users who have earned the badge has been moved below */}
             </CardContent>
           </div>
         </div>
       </Card>
 
-      {/* Section to display users who have earned the badge */}
       {users && users.length > 0 && (
-        <div className="pt-8 mt-10"> {/* Increased top padding and margin */}
-          <h3 className="text-2xl font-semibold text-foreground mb-6 text-center md:text-left">Recipients</h3> {/* Centered on small screens, left on medium+ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"> {/* Changed ul to div with grid layout */}
+        <div className="pt-8 mt-10">
+          <h3 className="text-2xl font-semibold text-foreground mb-6 text-center md:text-left">Recipients</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {users.map((userBadge) => {
-              if (!userBadge.UserProfile) return null; // Skip if UserProfile is null
+              if (!userBadge.UserProfile) return null;
               return (
-                <div key={userBadge.UserProfile.userId} className="p-5 rounded-xl shadow-lg bg-card hover:shadow-xl transition-shadow duration-300 ease-in-out flex flex-col items-center text-center"> {/* Changed li to div, added more padding, rounded-xl, centered content */}
+                <div key={userBadge.UserProfile.userId} className="p-5 rounded-xl shadow-lg bg-card hover:shadow-xl transition-shadow duration-300 ease-in-out flex flex-col items-center text-center">
                   <Link href={`/user/${userBadge.UserProfile.userId}`} className="group">
                     <h4 className="text-lg font-semibold text-primary group-hover:underline mb-1">
                       {userBadge.UserProfile.name || 'Unnamed User'}

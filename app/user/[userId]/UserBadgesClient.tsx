@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { Badge } from "@/components/ui/badge"; // Keep for potential fallback or different styling
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -10,7 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Share2 } from 'lucide-react'; // Import a share icon
+import { Share2 } from 'lucide-react';
 import {
     FacebookShareButton,
     TwitterShareButton,
@@ -23,10 +22,9 @@ import {
 } from 'react-share';
 import type { Tables } from '@/lib/supabase/database.types';
 import { createClient } from '@/lib/supabase/client';
-import { useParams } from 'next/navigation'; // Added import
+import { useParams } from 'next/navigation';
 import Image from "next/image";
 
-// Assuming Badge table has an imageUrl, id, name, and description
 type UserBadgeWithImage = Tables<'UserBadge'> & {
     Badge: Tables<'Badge'> & { imageUrl?: string }
 };
@@ -54,20 +52,17 @@ export default function UserBadgesClient({ badges }: UserBadgesClientProps) {
                     const publicIconUrl = supabase.storage.from('badges').getPublicUrl(userBadge.Badge.iconUrl).data.publicUrl;
                     
 
-                    return (
-                        <Dialog key={userBadge.badgeId}>
+                    return (                        <Dialog key={userBadge.badgeId}>
                             <div
-                                className="group relative flex flex-col items-center w-32 h-32 p-2 rounded-lg shadow-sm overflow-hidden cursor-pointer" // Added cursor-pointer
+                                className="group relative w-32 h-32 rounded-lg shadow-sm overflow-hidden cursor-pointer"
                             >
-                                <div className="flex-shrink-0">
-                                    <Image
-                                      className="h-16 w-16 rounded-full object-cover"
-                                      src={publicIconUrl}
-                                      alt={userBadge.Badge.name}
-                                      width={64}
-                                      height={64}
-                                    />
-                                </div>
+                                <Image
+                                  className="w-full h-full object-cover"
+                                  src={publicIconUrl}
+                                  alt={userBadge.Badge.name}
+                                  width={128}
+                                  height={128}
+                                />
                                 <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out bg-black/30 dark:bg-black/50 p-2">
                                     <Link href={`/badges/${userBadge.Badge.id}`} passHref>
                                         <span className="text-white text-sm font-semibold text-center mb-2 hover:underline cursor-pointer">

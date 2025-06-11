@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     if (!exchangeError && sessionData?.user) {
       const user = sessionData.user;
 
-      // Add this check for the email domain
+
       if (!user.email?.endsWith('@sastra.ac.in')) {
         console.error(`User email ${user.email} is not from @sastra.ac.in domain.`);
         
@@ -53,14 +53,12 @@ export async function GET(request: NextRequest) {
           const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
           if (deleteUserError) {
             console.error(`Failed to delete user ${user.id} from auth.users:`, deleteUserError.message);
-            // Even if deletion fails, proceed to sign out and redirect to an error page.
-            // The user might remain in the auth table, but they won't be able to use the app.
+
           } else {
             console.log(`Successfully deleted user ${user.id} from auth.users due to invalid email domain.`);
           }
         } catch (adminError: any) {
           console.error(`Error getting admin client or deleting user ${user.id}:`, adminError.message);
-          // Proceed to sign out and redirect even if admin operations fail.
         }
 
         // It's important to sign out the user if their email domain is not allowed,
@@ -70,7 +68,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(errorUrl);
       }
 
-      // Check if UserProfile exists using the user context client
       const { data: userProfile, error: profileError } = await supabase
         .from('UserProfile')
         .select('userId')

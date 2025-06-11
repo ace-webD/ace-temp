@@ -85,9 +85,8 @@ export const ContactSection = () => {
       setIsSubmitting(false);
     }
   }
-
   return (
-    <section id="contact" className="container py-24 sm:py-32">
+    <section id="contact" className="container py-16 sm:py-24">
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <div className="mb-4">
@@ -110,15 +109,6 @@ export const ContactSection = () => {
 
               <div>SASTRA Deemed University</div>
               <div>Thirumalaisamudram, Thanjavur, Tamil Nadu 613401</div>
-            </div>
-
-            <div>
-              <div className="flex gap-2 mb-1">
-                <Phone />
-                <div className="font-bold">Call us</div>
-              </div>
-
-              <div>..........</div>
             </div>
 
             <div>

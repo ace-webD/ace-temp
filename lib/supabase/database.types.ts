@@ -135,23 +135,23 @@ export type Database = {
           },
         ]
       }
-      user_admins: {
+      userAdmins: {
         Row: {
-          is_admin: boolean
-          user_id: string
+          isAdmin: boolean
+          userId: string
         }
         Insert: {
-          is_admin?: boolean
-          user_id: string
+          isAdmin?: boolean
+          userId: string
         }
         Update: {
-          is_admin?: boolean
-          user_id?: string
+          isAdmin?: boolean
+          userId?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_admins_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "userAdmins_userId_fkey"
+            columns: ["userId"]
             isOneToOne: true
             referencedRelation: "UserProfile"
             referencedColumns: ["userId"]
@@ -199,7 +199,6 @@ export type Database = {
           contactNumber: string | null
           currentRating: number
           department: string
-          id: string
           name: string
           registrationNumber: string
           userId: string
@@ -209,7 +208,6 @@ export type Database = {
           contactNumber?: string | null
           currentRating?: number
           department: string
-          id?: string
           name: string
           registrationNumber: string
           userId: string
@@ -219,7 +217,6 @@ export type Database = {
           contactNumber?: string | null
           currentRating?: number
           department?: string
-          id?: string
           name?: string
           registrationNumber?: string
           userId?: string

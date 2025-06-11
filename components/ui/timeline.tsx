@@ -56,7 +56,7 @@ export const Timeline = ({ data, availableYears = [], selectedYear, onSelectYear
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2 md:mb-8">
           <div className="flex-1">
             <h2 className="text-3xl font-bold text-foreground sm:text-4xl md:text-[40px] md:leading-[1.2]">
-              Eventlog from our journey
+              Eventlog
             </h2>
             <p className="text-muted-foreground text-sm md:text-base max-w-sm mt-1">
               Where Interests Meet Opportunity
