@@ -1,7 +1,10 @@
+"use client";
+
 import GithubIcon from "@/components/icons/GithubIcon";
 import LinkedInIcon from "@/components/icons/LinkedInIcon";
 import InstagramIcon from "@/components/icons/InstagramIcon";
-
+import { useEffect, useRef } from "react";
+import autoAnimate from "@formkit/auto-animate"; 
 import {
   Card,
   CardContent,
@@ -11,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+
 interface TeamProps {
   imageUrl: string;
   firstName: string;
@@ -22,7 +26,15 @@ interface SocialNetworkProps {
   name: string;
   url: string;
 }
+
 export const TeamSection = () => {
+  const parentRef = useRef(null);
+
+  useEffect(()=> {
+  if(window.innerWidth<768 && parentRef.current) { 
+    autoAnimate(parentRef.current);
+  }
+}, []);
   const teamList: TeamProps[] = [
     {
       imageUrl: "/images/leads/Tulip raaj.jpg",
@@ -208,7 +220,10 @@ export const TeamSection = () => {
           Meet Our Club Bearers
         </h2>
       </div>
-      <div className="flex flex-wrap justify-center gap-8">
+      <div ref={parentRef} 
+          className="flex gap-6 overflow-x-auto snap-x snap-mandatory px-4 pb-4 scroll-smooth 
+          sm:flex-wrap sm:justify-center sm:overflow-x-visible"
+>
         {teamList.map(
           (
             { imageUrl, firstName, lastName, positions, socialNetworks },
@@ -216,10 +231,10 @@ export const TeamSection = () => {
           ) => (
             <Card
               key={index}
-              className="bg-muted/60 dark:bg-card flex flex-col h-full overflow-hidden group/hoverimg w-72"
+              className="bg-muted/60 dark:bg-card flex flex-col h-full overflow-hidden group/hoverimg w-72 min-w-[18rem] flex-shrink-0 snap-center sm:min-w-0 sm:flex-shrink sm:w-[18rem]"
             >
               <CardHeader className="p-0 gap-0">
-                <div className="h-full overflow-hidden">
+                <div className="overflow-hidden">
                   <Image
                     src={imageUrl}
                     alt={`${firstName} ${lastName}`}
@@ -237,7 +252,7 @@ export const TeamSection = () => {
                 {positions.join(", ")}
               </CardContent>
 
-              <CardFooter className="space-x-4 mt-auto">
+              <CardFooter className="space-x-4 mt-auto px-6 pb-4">
                 {socialNetworks.map(({ name, url }, index) => (
                   <Link
                     key={index}
