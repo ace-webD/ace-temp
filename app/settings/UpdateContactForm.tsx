@@ -22,12 +22,10 @@ export default function UpdateContactForm({ userId, initialContactNumber }: Upda
     if (contactNumber && !/^[0-9]{10}$/.test(contactNumber)) {
       toast.error('Please enter a valid 10-digit contact number.');
       return;
-    }    setSaving(true);
-
-    const { error: updateError } = await supabase
+    }    setSaving(true);    const { error: updateError } = await supabase
       .from('UserProfile')
       .update({ contactNumber: contactNumber || null })
-      .eq('userId', userId);    if (updateError) {
+      .eq('id', userId);if (updateError) {
       console.error('Error updating contact number:', updateError);
       toast.error('Failed to update contact number. Please try again.');
     } else {

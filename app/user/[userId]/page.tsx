@@ -26,7 +26,7 @@ async function fetchUserProfileData(
   const { data, error } = await supabase
     .from("UserProfile")
     .select("*")
-    .eq("userId", userId)
+    .eq("id", userId)
     .single();
 
   if (error) {

@@ -13,7 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"; 
+} from "@/components/ui/select";
 
 interface TimelineEntry {
   title: React.ReactNode;
@@ -27,7 +27,12 @@ interface TimelineProps {
   onSelectYear?: (year: number | null) => void;
 }
 
-export const Timeline = ({ data, availableYears = [], selectedYear, onSelectYear }: TimelineProps) => {
+export const Timeline = ({
+  data,
+  availableYears = [],
+  selectedYear,
+  onSelectYear,
+}: TimelineProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
@@ -48,18 +53,15 @@ export const Timeline = ({ data, availableYears = [], selectedYear, onSelectYear
   const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
-    <div
-      className="w-full bg-background font-sans md:px-10"
-      ref={containerRef}
-    >
+    <div className="w-full bg-background font-sans md:px-10" ref={containerRef}>
       <div className="max-w-7xl mx-auto pt-6 md:py-10 px-2 sm:px-4 md:px-8 lg:px-10">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2 md:mb-8">
           <div className="flex-1">
-            <h2 className="text-3xl font-bold text-foreground sm:text-4xl md:text-[40px] md:leading-[1.2]">
-              Eventlog
+            <h2 className="text-3xl font-bold text</div>-foreground sm:text-4xl md:text-[40px] md:leading-[1.2]">
+              Through the Years
             </h2>
             <p className="text-muted-foreground text-sm md:text-base max-w-sm mt-1">
-              Where Interests Meet Opportunity
+              {data.length} epic events from {selectedYear}.
             </p>
           </div>
           {/* Filter section */}
@@ -67,7 +69,7 @@ export const Timeline = ({ data, availableYears = [], selectedYear, onSelectYear
             <div className="flex items-center flex-wrap gap-2 mt-4 md:mt-0 w-full md:w-auto justify-start md:justify-end">
               {availableYears.length > 3 ? (
                 <Select
-                  value={selectedYear?.toString() ?? ''} // Ensure value is a string
+                  value={selectedYear?.toString() ?? ""} // Ensure value is a string
                   onValueChange={(value) => {
                     const year = parseInt(value, 10);
                     onSelectYear(isNaN(year) ? null : year);
@@ -77,7 +79,7 @@ export const Timeline = ({ data, availableYears = [], selectedYear, onSelectYear
                     <SelectValue placeholder="Select Year" />
                   </SelectTrigger>
                   <SelectContent>
-                    {availableYears.map(year => (
+                    {availableYears.map((year) => (
                       <SelectItem key={year} value={year.toString()}>
                         {year}
                       </SelectItem>
@@ -85,11 +87,13 @@ export const Timeline = ({ data, availableYears = [], selectedYear, onSelectYear
                   </SelectContent>
                 </Select>
               ) : (
-                availableYears.map(year => (
+                availableYears.map((year) => (
                   <Button
                     key={year}
-                    variant={selectedYear === year ? 'default' : 'outline'}
-                    onClick={() => onSelectYear(selectedYear === year ? null : year)}
+                    variant={selectedYear === year ? "default" : "outline"}
+                    onClick={() =>
+                      onSelectYear(selectedYear === year ? null : year)
+                    }
                     size="sm"
                     className="text-xs px-2 py-1 h-auto sm:text-sm sm:px-3"
                   >

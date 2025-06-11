@@ -70,7 +70,7 @@ create table "public"."UserProfile" (
     "contactNumber" text,
     "currentRating" integer not null default 0,
     "name" text not null,
-    "userId" uuid not null
+    "id" uuid not null
 );
 
 
@@ -98,11 +98,11 @@ CREATE UNIQUE INDEX "UserBadge_pkey" ON public."UserBadge" USING btree (id);
 
 CREATE UNIQUE INDEX "UserBadge_userId_badgeId_key" ON public."UserBadge" USING btree ("userId", "badgeId");
 
-CREATE UNIQUE INDEX "UserProfile_pkey" ON public."UserProfile" USING btree ("userId");
+CREATE INDEX "UserProfile_id_idx" ON public."UserProfile" USING btree (id);
+
+CREATE UNIQUE INDEX "UserProfile_pkey" ON public."UserProfile" USING btree (id);
 
 CREATE UNIQUE INDEX "UserProfile_registrationNumber_key" ON public."UserProfile" USING btree ("registrationNumber");
-
-CREATE INDEX "UserProfile_userId_idx" ON public."UserProfile" USING btree ("userId");
 
 CREATE UNIQUE INDEX "userAdmins_pkey" ON public."userAdmins" USING btree ("userId");
 
@@ -126,7 +126,7 @@ alter table "public"."Registration" validate constraint "Registration_eventId_fk
 
 alter table "public"."Registration" add constraint "Registration_userId_eventId_key" UNIQUE using index "Registration_userId_eventId_key";
 
-alter table "public"."Registration" add constraint "Registration_userId_fkey" FOREIGN KEY ("userId") REFERENCES "UserProfile"("userId") ON DELETE CASCADE not valid;
+alter table "public"."Registration" add constraint "Registration_userId_fkey" FOREIGN KEY ("userId") REFERENCES "UserProfile"(id) ON DELETE CASCADE not valid;
 
 alter table "public"."Registration" validate constraint "Registration_userId_fkey";
 
@@ -136,7 +136,7 @@ alter table "public"."UserBadge" validate constraint "UserBadge_badgeId_fkey";
 
 alter table "public"."UserBadge" add constraint "UserBadge_userId_badgeId_key" UNIQUE using index "UserBadge_userId_badgeId_key";
 
-alter table "public"."UserBadge" add constraint "UserBadge_userId_fkey" FOREIGN KEY ("userId") REFERENCES "UserProfile"("userId") ON DELETE CASCADE not valid;
+alter table "public"."UserBadge" add constraint "UserBadge_userId_fkey" FOREIGN KEY ("userId") REFERENCES "UserProfile"(id) ON DELETE CASCADE not valid;
 
 alter table "public"."UserBadge" validate constraint "UserBadge_userId_fkey";
 
@@ -144,13 +144,13 @@ alter table "public"."UserProfile" add constraint "UserProfile_contactNumber_for
 
 alter table "public"."UserProfile" validate constraint "UserProfile_contactNumber_format";
 
+alter table "public"."UserProfile" add constraint "UserProfile_id_fkey" FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE not valid;
+
+alter table "public"."UserProfile" validate constraint "UserProfile_id_fkey";
+
 alter table "public"."UserProfile" add constraint "UserProfile_registrationNumber_key" UNIQUE using index "UserProfile_registrationNumber_key";
 
-alter table "public"."UserProfile" add constraint "UserProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES auth.users(id) ON DELETE CASCADE not valid;
-
-alter table "public"."UserProfile" validate constraint "UserProfile_userId_fkey";
-
-alter table "public"."userAdmins" add constraint "userAdmins_userId_fkey" FOREIGN KEY ("userId") REFERENCES "UserProfile"("userId") ON DELETE CASCADE not valid;
+alter table "public"."userAdmins" add constraint "userAdmins_userId_fkey" FOREIGN KEY ("userId") REFERENCES "UserProfile"(id) ON DELETE CASCADE not valid;
 
 alter table "public"."userAdmins" validate constraint "userAdmins_userId_fkey";
 
@@ -162,7 +162,7 @@ CREATE OR REPLACE FUNCTION public.create_new_user_profile(p_user_id uuid, p_name
  SECURITY DEFINER
 AS $function$
 BEGIN
-    INSERT INTO public."UserProfile" ("userId", "name", "registrationNumber", "year", "department")
+    INSERT INTO public."UserProfile" ("id", "name", "registrationNumber", "year", "department")
     VALUES (p_user_id, p_name, p_registration_number, p_year, p_department)
     -- Handle conflict on registrationNumber (primary key)
     ON CONFLICT ("registrationNumber") DO NOTHING;
@@ -250,19 +250,19 @@ BEGIN
         IF NEW.points IS NOT NULL AND NEW.points <> 0 THEN
             UPDATE public."UserProfile"
             SET "currentRating" = "currentRating" + NEW.points
-            WHERE "userId" = NEW."userId";
+            WHERE "id" = NEW."userId";
         END IF;
     ELSIF (TG_OP = 'UPDATE') THEN
         IF NEW."userId" IS NOT NULL AND (COALESCE(OLD.points, 0) <> COALESCE(NEW.points, 0)) THEN
             UPDATE public."UserProfile"
             SET "currentRating" = "currentRating" + (COALESCE(NEW.points, 0) - COALESCE(OLD.points, 0))
-            WHERE "userId" = NEW."userId";
+            WHERE "id" = NEW."userId";
         END IF;
     ELSIF (TG_OP = 'DELETE') THEN
         IF OLD.points IS NOT NULL AND OLD.points <> 0 THEN
             UPDATE public."UserProfile"
             SET "currentRating" = "currentRating" - OLD.points
-            WHERE "userId" = OLD."userId";
+            WHERE "id" = OLD."userId";
         END IF;
     END IF;
     RETURN NULL;
@@ -585,7 +585,7 @@ on "public"."UserProfile"
 as permissive
 for insert
 to authenticated
-with check (("userId" = auth.uid()));
+with check ((id = auth.uid()));
 
 
 create policy "Allow users to update their own profile"
@@ -593,8 +593,8 @@ on "public"."UserProfile"
 as permissive
 for update
 to authenticated
-using (("userId" = auth.uid()))
-with check (("userId" = auth.uid()));
+using ((id = auth.uid()))
+with check ((id = auth.uid()));
 
 
 create policy "Enable read access for all users"

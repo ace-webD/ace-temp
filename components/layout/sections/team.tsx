@@ -47,7 +47,7 @@ export const TeamSection = () => {
     {
       imageUrl: "/images/leads/Ananya C.jpg",
       firstName: "Ananya",
-      lastName: "Chandrashekhar",
+      lastName: "Chandrasekaran",
       positions: ["General Secretary"],
       socialNetworks: [
         {

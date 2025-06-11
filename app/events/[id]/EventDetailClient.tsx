@@ -83,11 +83,10 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!authUser || !supabase) return;
-      setProfileLoading(true);
-      const { data: profile, error: profileError } = await supabase
+      setProfileLoading(true);      const { data: profile, error: profileError } = await supabase
         .from('UserProfile')
         .select('*')
-        .eq('userId', authUser.id)
+        .eq('id', authUser.id)
         .single();
 
       if (profileError && profileError.code !== 'PGRST116') {
@@ -151,16 +150,14 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
     }
     setIsRegisterConfirmOpen(false); // Close dialog
 
-    let currentContactNumber = userProfile.contactNumber;
-
-    // This part handles contact number update if it was changed in the contact modal
+    let currentContactNumber = userProfile.contactNumber;    // This part handles contact number update if it was changed in the contact modal
     // and then the user proceeded to confirm registration.
     if (contactNumberInput.trim() && contactNumberInput.trim() !== userProfile.contactNumber) {
       setIsSubmitting(true); // isSubmitting for the whole process now
       const { error: updateError } = await supabase
         .from('UserProfile')
         .update({ contactNumber: contactNumberInput.trim() })
-        .eq('userId', authUser.id);
+        .eq('id', authUser.id);
 
       if (updateError) {
         toast.error("Failed to update contact number. Please try again.");
@@ -227,13 +224,11 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
     if (!authUser || !supabase) {
         toast.error("User not authenticated.");
         return;
-    }
-
-    setIsSubmitting(true);
+    }    setIsSubmitting(true);
     const { error } = await supabase
         .from('UserProfile')
         .update({ contactNumber: contactNumberInput.trim() })
-        .eq('userId', authUser.id);
+        .eq('id', authUser.id);
     setIsSubmitting(false);
 
     if (error) {
@@ -373,10 +368,10 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
                     <ul className="space-y-3">
                       {leaderboardData.map((entry, index) => (
                         // MODIFIED: Increased padding and rounding
-                        <li key={entry.userId || index} className="bg-muted p-4 rounded-lg shadow-sm flex justify-between items-center">
+                        <li key={entry.id || index} className="bg-muted p-4 rounded-lg shadow-sm flex justify-between items-center">
                           <div>
                             <Link
-                              href={`/user/${entry.userId}`}
+                              href={`/user/${entry.id}`}
                               className="font-semibold text-card-foreground hover:underline">
                               {entry.name || 'Anonymous User'}
                             </Link>
@@ -401,9 +396,9 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
                   <ul className="space-y-3">
                     {participants.map((participant, index) => (
                       // MODIFIED: Increased padding and rounding
-                      <li key={participant.userId || index} className="bg-muted p-4 rounded-lg shadow-sm">
+                      <li key={participant.id || index} className="bg-muted p-4 rounded-lg shadow-sm">
                         <Link
-                          href={`/user/${participant.userId}`}
+                          href={`/user/${participant.id}`}
                           className="font-semibold text-card-foreground hover:underline">
                           {participant.name || 'Anonymous User'}
                         </Link>

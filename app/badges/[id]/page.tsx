@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 type Badge = Tables<'Badge'>;
 type BadgeUser = Tables<'UserBadge'> & {
-  UserProfile: Pick<Tables<'UserProfile'>, 'userId' | 'name'> | null;
+  UserProfile: Pick<Tables<'UserProfile'>, 'id' | 'name'> | null;
   earnedAt: string;
 };
 
@@ -30,7 +30,7 @@ async function fetchBadgeById(id: string, supabase: any): Promise<{ badge: Badge
     .select(`
       userId,
       earnedAt,
-      UserProfile (userId, name)
+      UserProfile (id, name)
     `)
     .eq('badgeId', id);
 
@@ -133,8 +133,8 @@ export default async function BadgeDetailPage({ params }: { params: Promise<{ id
             {users.map((userBadge) => {
               if (!userBadge.UserProfile) return null;
               return (
-                <div key={userBadge.UserProfile.userId} className="p-5 rounded-xl shadow-lg bg-card hover:shadow-xl transition-shadow duration-300 ease-in-out flex flex-col items-center text-center">
-                  <Link href={`/user/${userBadge.UserProfile.userId}`} className="group">
+                <div key={userBadge.UserProfile.id} className="p-5 rounded-xl shadow-lg bg-card hover:shadow-xl transition-shadow duration-300 ease-in-out flex flex-col items-center text-center">
+                  <Link href={`/user/${userBadge.UserProfile.id}`} className="group">
                     <h4 className="text-lg font-semibold text-primary group-hover:underline mb-1">
                       {userBadge.UserProfile.name || 'Unnamed User'}
                     </h4>

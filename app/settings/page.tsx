@@ -13,12 +13,10 @@ export default async function SettingsPage() {
     if (authError || !authUser) {
         console.log('SettingsPage: No authenticated user, redirecting to login.');
         redirect('/');
-    }
-
-    const { data: userProfile, error: profileError } = await supabase
+    }    const { data: userProfile, error: profileError } = await supabase
         .from('UserProfile')
         .select('*')
-        .eq('userId', authUser.id)
+        .eq('id', authUser.id)
         .single<UserProfile>();
 
     if (profileError && profileError.code !== 'PGRST116') { 
@@ -82,7 +80,7 @@ export default async function SettingsPage() {
                 </CardContent>
 
                 <UpdateContactForm
-                    userId={userProfile.userId}
+                    userId={userProfile.id}
                     initialContactNumber={userProfile.contactNumber}
                 />
             </Card>

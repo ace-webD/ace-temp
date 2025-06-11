@@ -131,7 +131,7 @@ export type Database = {
             columns: ["userId"]
             isOneToOne: false
             referencedRelation: "UserProfile"
-            referencedColumns: ["userId"]
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -154,7 +154,7 @@ export type Database = {
             columns: ["userId"]
             isOneToOne: true
             referencedRelation: "UserProfile"
-            referencedColumns: ["userId"]
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -190,7 +190,7 @@ export type Database = {
             columns: ["userId"]
             isOneToOne: false
             referencedRelation: "UserProfile"
-            referencedColumns: ["userId"]
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -199,27 +199,27 @@ export type Database = {
           contactNumber: string | null
           currentRating: number
           department: string
+          id: string
           name: string
           registrationNumber: string
-          userId: string
           year: number
         }
         Insert: {
           contactNumber?: string | null
           currentRating?: number
           department: string
+          id: string
           name: string
           registrationNumber: string
-          userId: string
           year: number
         }
         Update: {
           contactNumber?: string | null
           currentRating?: number
           department?: string
+          id?: string
           name?: string
           registrationNumber?: string
-          userId?: string
           year?: number
         }
         Relationships: []

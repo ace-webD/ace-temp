@@ -38,10 +38,9 @@ const featureList: PrinciplesProps[] = [
     title: "Community",
     description:
       "We are committed to building a strong and supportive community of computing enthusiasts, where members can connect, share knowledge, and inspire each other to achieve their goals.",
-  },
-  {
+  },  {
     icon: "View",
-    title: "Transperancy",
+    title: "Transparency",
     description:
       "We believe in transparency and open communication, ensuring that our members are informed about our activities, decisions, and initiatives.",
   },

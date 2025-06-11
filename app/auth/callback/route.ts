@@ -66,12 +66,10 @@ export async function GET(request: NextRequest) {
         await supabase.auth.signOut();
         const errorUrl = `${origin}/auth/auth-error?errorCode=INVALID_EMAIL_DOMAIN`;
         return NextResponse.redirect(errorUrl);
-      }
-
-      const { data: userProfile, error: profileError } = await supabase
+      }      const { data: userProfile, error: profileError } = await supabase
         .from('UserProfile')
-        .select('userId')
-        .eq('userId', user.id)
+        .select('id')
+        .eq('id', user.id)
         .maybeSingle();
 
       if (profileError) {
