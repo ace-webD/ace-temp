@@ -16,4 +16,4 @@ npx supabase db pull
 
 ### Generate single migration
 Creates a new migration file for specific table changes with proper linking to the remote database (Delete the existing migrations folder)
-npx supabase db diff -f my_table --linked
+npx supabase db diff -f my_table --linked --schema public,storage

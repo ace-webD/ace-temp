@@ -11,10 +11,9 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import type { Tables } from "@/lib/supabase/database.types";
-import UserBadgesClient from "./UserBadgesClient"; // Import the new client component
+import { UserBadgesClient } from "./UserBadgesClient";
 
-// Define types based on your Supabase schema
-type UserProfile = Tables<"UserProfile">; // Use the standard UserProfile type
+type UserProfile = Tables<"UserProfile">; 
 type UserBadge = Tables<"UserBadge"> & { Badge: Tables<"Badge"> };
 type Event = Tables<"Event">;
 type Registration = Tables<"Registration">;

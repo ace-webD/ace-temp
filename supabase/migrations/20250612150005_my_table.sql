@@ -156,6 +156,42 @@ alter table "public"."userAdmins" validate constraint "userAdmins_userId_fkey";
 
 set check_function_bodies = off;
 
+CREATE OR REPLACE FUNCTION public.add_admin_user(user_email text)
+ RETURNS boolean
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+AS $function$
+DECLARE
+    target_user_id uuid;
+    profile_exists boolean;
+BEGIN
+    SELECT id INTO target_user_id 
+    FROM auth.users 
+    WHERE email = user_email;
+    
+    IF target_user_id IS NULL THEN
+        RAISE EXCEPTION 'User with email % not found', user_email;
+    END IF;
+    
+    SELECT EXISTS(
+        SELECT 1 FROM public."UserProfile" 
+        WHERE id = target_user_id
+    ) INTO profile_exists;
+    
+    IF NOT profile_exists THEN
+        RAISE EXCEPTION 'User % does not have a UserProfile', user_email;
+    END IF;
+    
+    INSERT INTO public."userAdmins" ("userId", "isAdmin")
+    VALUES (target_user_id, true)
+    ON CONFLICT ("userId") 
+    DO UPDATE SET "isAdmin" = true;
+    
+    RETURN true;
+END;
+$function$
+;
+
 CREATE OR REPLACE FUNCTION public.create_new_user_profile(p_user_id uuid, p_name text, p_registration_number text, p_year integer, p_department text)
  RETURNS void
  LANGUAGE plpgsql
@@ -164,45 +200,8 @@ AS $function$
 BEGIN
     INSERT INTO public."UserProfile" ("id", "name", "registrationNumber", "year", "department")
     VALUES (p_user_id, p_name, p_registration_number, p_year, p_department)
-    -- Handle conflict on registrationNumber (primary key)
     ON CONFLICT ("registrationNumber") DO NOTHING;
 END;
-$function$
-;
-
-CREATE OR REPLACE FUNCTION public.custom_access_token_hook(event jsonb)
- RETURNS jsonb
- LANGUAGE plpgsql
- STABLE SECURITY DEFINER
-AS $function$
-    declare
-        claims jsonb;
-        is_admin_status boolean;
-    begin
-        claims := event->'claims';
-        
-        -- Check admin status using userId directly with correct table/column names
-        SELECT "isAdmin" INTO is_admin_status 
-        FROM public."userAdmins" 
-        WHERE "userId" = (event->>'user_id')::uuid;
-        
-        -- Set the is_admin claim
-        IF jsonb_typeof(claims->'is_admin') = 'null' or claims->'is_admin' is null THEN
-            claims := jsonb_set(claims, '{is_admin}', to_jsonb(coalesce(is_admin_status, false)));
-        END IF;
-        
-        event := jsonb_set(event, '{claims}', claims);
-        return event;
-    end;
-$function$
-;
-
-CREATE OR REPLACE FUNCTION public.custom_claims_get(claim_name text)
- RETURNS jsonb
- LANGUAGE sql
- STABLE
-AS $function$
-  select coalesce(current_setting('request.jwt.claims', true)::jsonb ->> claim_name, null)::jsonb;
 $function$
 ;
 
@@ -234,10 +233,39 @@ $function$
 CREATE OR REPLACE FUNCTION public.is_admin()
  RETURNS boolean
  LANGUAGE sql
- SECURITY DEFINER
- SET search_path TO 'public'
+ STABLE SECURITY DEFINER
 AS $function$
-  SELECT coalesce(public.custom_claims_get('is_admin')::boolean, false);
+  SELECT COALESCE(
+    (SELECT "isAdmin" 
+     FROM public."userAdmins" 
+     WHERE "userId" = auth.uid()),
+    false
+  );
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.remove_admin_user(user_email text)
+ RETURNS boolean
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+AS $function$
+DECLARE
+    target_user_id uuid;
+BEGIN
+    SELECT id INTO target_user_id 
+    FROM auth.users 
+    WHERE email = user_email;
+    
+    IF target_user_id IS NULL THEN
+        RAISE EXCEPTION 'User with email % not found', user_email;
+    END IF;
+    
+    UPDATE public."userAdmins" 
+    SET "isAdmin" = false 
+    WHERE "userId" = target_user_id;
+    
+    RETURN true;
+END;
 $function$
 ;
 
@@ -270,13 +298,31 @@ END;
 $function$
 ;
 
+grant delete on table "public"."Badge" to "anon";
+
+grant insert on table "public"."Badge" to "anon";
+
+grant references on table "public"."Badge" to "anon";
+
 grant select on table "public"."Badge" to "anon";
+
+grant trigger on table "public"."Badge" to "anon";
+
+grant truncate on table "public"."Badge" to "anon";
+
+grant update on table "public"."Badge" to "anon";
 
 grant delete on table "public"."Badge" to "authenticated";
 
 grant insert on table "public"."Badge" to "authenticated";
 
+grant references on table "public"."Badge" to "authenticated";
+
 grant select on table "public"."Badge" to "authenticated";
+
+grant trigger on table "public"."Badge" to "authenticated";
+
+grant truncate on table "public"."Badge" to "authenticated";
 
 grant update on table "public"."Badge" to "authenticated";
 
@@ -294,15 +340,31 @@ grant truncate on table "public"."Badge" to "service_role";
 
 grant update on table "public"."Badge" to "service_role";
 
+grant delete on table "public"."ContactMessage" to "anon";
+
 grant insert on table "public"."ContactMessage" to "anon";
 
+grant references on table "public"."ContactMessage" to "anon";
+
 grant select on table "public"."ContactMessage" to "anon";
+
+grant trigger on table "public"."ContactMessage" to "anon";
+
+grant truncate on table "public"."ContactMessage" to "anon";
+
+grant update on table "public"."ContactMessage" to "anon";
 
 grant delete on table "public"."ContactMessage" to "authenticated";
 
 grant insert on table "public"."ContactMessage" to "authenticated";
 
+grant references on table "public"."ContactMessage" to "authenticated";
+
 grant select on table "public"."ContactMessage" to "authenticated";
+
+grant trigger on table "public"."ContactMessage" to "authenticated";
+
+grant truncate on table "public"."ContactMessage" to "authenticated";
 
 grant update on table "public"."ContactMessage" to "authenticated";
 
@@ -320,13 +382,31 @@ grant truncate on table "public"."ContactMessage" to "service_role";
 
 grant update on table "public"."ContactMessage" to "service_role";
 
+grant delete on table "public"."Event" to "anon";
+
+grant insert on table "public"."Event" to "anon";
+
+grant references on table "public"."Event" to "anon";
+
 grant select on table "public"."Event" to "anon";
+
+grant trigger on table "public"."Event" to "anon";
+
+grant truncate on table "public"."Event" to "anon";
+
+grant update on table "public"."Event" to "anon";
 
 grant delete on table "public"."Event" to "authenticated";
 
 grant insert on table "public"."Event" to "authenticated";
 
+grant references on table "public"."Event" to "authenticated";
+
 grant select on table "public"."Event" to "authenticated";
+
+grant trigger on table "public"."Event" to "authenticated";
+
+grant truncate on table "public"."Event" to "authenticated";
 
 grant update on table "public"."Event" to "authenticated";
 
@@ -344,13 +424,31 @@ grant truncate on table "public"."Event" to "service_role";
 
 grant update on table "public"."Event" to "service_role";
 
+grant delete on table "public"."Registration" to "anon";
+
+grant insert on table "public"."Registration" to "anon";
+
+grant references on table "public"."Registration" to "anon";
+
 grant select on table "public"."Registration" to "anon";
+
+grant trigger on table "public"."Registration" to "anon";
+
+grant truncate on table "public"."Registration" to "anon";
+
+grant update on table "public"."Registration" to "anon";
 
 grant delete on table "public"."Registration" to "authenticated";
 
 grant insert on table "public"."Registration" to "authenticated";
 
+grant references on table "public"."Registration" to "authenticated";
+
 grant select on table "public"."Registration" to "authenticated";
+
+grant trigger on table "public"."Registration" to "authenticated";
+
+grant truncate on table "public"."Registration" to "authenticated";
 
 grant update on table "public"."Registration" to "authenticated";
 
@@ -368,13 +466,31 @@ grant truncate on table "public"."Registration" to "service_role";
 
 grant update on table "public"."Registration" to "service_role";
 
+grant delete on table "public"."UserBadge" to "anon";
+
+grant insert on table "public"."UserBadge" to "anon";
+
+grant references on table "public"."UserBadge" to "anon";
+
 grant select on table "public"."UserBadge" to "anon";
+
+grant trigger on table "public"."UserBadge" to "anon";
+
+grant truncate on table "public"."UserBadge" to "anon";
+
+grant update on table "public"."UserBadge" to "anon";
 
 grant delete on table "public"."UserBadge" to "authenticated";
 
 grant insert on table "public"."UserBadge" to "authenticated";
 
+grant references on table "public"."UserBadge" to "authenticated";
+
 grant select on table "public"."UserBadge" to "authenticated";
+
+grant trigger on table "public"."UserBadge" to "authenticated";
+
+grant truncate on table "public"."UserBadge" to "authenticated";
 
 grant update on table "public"."UserBadge" to "authenticated";
 
@@ -392,13 +508,31 @@ grant truncate on table "public"."UserBadge" to "service_role";
 
 grant update on table "public"."UserBadge" to "service_role";
 
+grant delete on table "public"."UserProfile" to "anon";
+
+grant insert on table "public"."UserProfile" to "anon";
+
+grant references on table "public"."UserProfile" to "anon";
+
 grant select on table "public"."UserProfile" to "anon";
+
+grant trigger on table "public"."UserProfile" to "anon";
+
+grant truncate on table "public"."UserProfile" to "anon";
+
+grant update on table "public"."UserProfile" to "anon";
 
 grant delete on table "public"."UserProfile" to "authenticated";
 
 grant insert on table "public"."UserProfile" to "authenticated";
 
+grant references on table "public"."UserProfile" to "authenticated";
+
 grant select on table "public"."UserProfile" to "authenticated";
+
+grant trigger on table "public"."UserProfile" to "authenticated";
+
+grant truncate on table "public"."UserProfile" to "authenticated";
 
 grant update on table "public"."UserProfile" to "authenticated";
 
@@ -416,13 +550,31 @@ grant truncate on table "public"."UserProfile" to "service_role";
 
 grant update on table "public"."UserProfile" to "service_role";
 
+grant delete on table "public"."userAdmins" to "anon";
+
+grant insert on table "public"."userAdmins" to "anon";
+
+grant references on table "public"."userAdmins" to "anon";
+
 grant select on table "public"."userAdmins" to "anon";
+
+grant trigger on table "public"."userAdmins" to "anon";
+
+grant truncate on table "public"."userAdmins" to "anon";
+
+grant update on table "public"."userAdmins" to "anon";
 
 grant delete on table "public"."userAdmins" to "authenticated";
 
 grant insert on table "public"."userAdmins" to "authenticated";
 
+grant references on table "public"."userAdmins" to "authenticated";
+
 grant select on table "public"."userAdmins" to "authenticated";
+
+grant trigger on table "public"."userAdmins" to "authenticated";
+
+grant truncate on table "public"."userAdmins" to "authenticated";
 
 grant update on table "public"."userAdmins" to "authenticated";
 
@@ -444,60 +596,43 @@ grant delete on table "public"."userAdmins" to "supabase_auth_admin";
 
 grant insert on table "public"."userAdmins" to "supabase_auth_admin";
 
+grant references on table "public"."userAdmins" to "supabase_auth_admin";
+
 grant select on table "public"."userAdmins" to "supabase_auth_admin";
+
+grant trigger on table "public"."userAdmins" to "supabase_auth_admin";
+
+grant truncate on table "public"."userAdmins" to "supabase_auth_admin";
 
 grant update on table "public"."userAdmins" to "supabase_auth_admin";
 
-create policy "Allow admin full access to badges"
+create policy "Admins can manage badges"
 on "public"."Badge"
 as permissive
 for all
-to public
+to authenticated
 using (is_admin())
 with check (is_admin());
 
 
-create policy "Allow authenticated read access to badges"
+create policy "Public can read badges"
 on "public"."Badge"
 as permissive
 for select
+to public
+using (true);
+
+
+create policy "Admins can manage contact messages"
+on "public"."ContactMessage"
+as permissive
+for all
 to authenticated
-using (true);
+using (is_admin())
+with check (is_admin());
 
 
-create policy "Enable read access for all users"
-on "public"."Badge"
-as permissive
-for select
-to public
-using (true);
-
-
-create policy "Allow admin delete access to messages"
-on "public"."ContactMessage"
-as permissive
-for delete
-to public
-using (is_admin());
-
-
-create policy "Allow admin read access to messages"
-on "public"."ContactMessage"
-as permissive
-for select
-to public
-using (is_admin());
-
-
-create policy "Enable read access for all users"
-on "public"."ContactMessage"
-as permissive
-for select
-to public
-using (true);
-
-
-create policy "Enable write access for all users"
+create policy "Anyone can create contact messages"
 on "public"."ContactMessage"
 as permissive
 for insert
@@ -505,41 +640,41 @@ to public
 with check (true);
 
 
-create policy "Allow admin full access to events"
+create policy "Admins can manage events"
 on "public"."Event"
 as permissive
 for all
-to public
+to authenticated
 using (is_admin())
 with check (is_admin());
 
 
-create policy "Allow authenticated read access to events"
+create policy "Public can read events"
 on "public"."Event"
 as permissive
 for select
-to authenticated
+to public
 using (true);
 
 
-create policy "Enable read access for all users"
-on "public"."Event"
-as permissive
-for select
-to anon
-using (true);
-
-
-create policy "Admin: Full access to registrations"
+create policy "Admins can manage all registrations"
 on "public"."Registration"
 as permissive
 for all
-to public
+to authenticated
 using (is_admin())
 with check (is_admin());
 
 
-create policy "Authenticated: Insert own registrations"
+create policy "Public can read registrations"
+on "public"."Registration"
+as permissive
+for select
+to public
+using (true);
+
+
+create policy "Users can register for events"
 on "public"."Registration"
 as permissive
 for insert
@@ -547,24 +682,16 @@ to authenticated
 with check (("userId" = auth.uid()));
 
 
-create policy "Public: Read access to registrations"
-on "public"."Registration"
-as permissive
-for select
-to public
-using (true);
-
-
-create policy "Admin: Full access to user badges"
+create policy "Admins can manage user badges"
 on "public"."UserBadge"
 as permissive
 for all
-to public
+to authenticated
 using (is_admin())
 with check (is_admin());
 
 
-create policy "Public: Read access to user badges"
+create policy "Public can read user badges"
 on "public"."UserBadge"
 as permissive
 for select
@@ -572,40 +699,42 @@ to public
 using (true);
 
 
-create policy "Allow authenticated users to view profiles"
+create policy "Admins can manage all profiles"
+on "public"."UserProfile"
+as permissive
+for all
+to authenticated
+using (is_admin())
+with check (is_admin());
+
+
+create policy "Public can read user profiles"
 on "public"."UserProfile"
 as permissive
 for select
-to authenticated
+to public
 using (true);
 
 
-create policy "Allow users to insert their own profile"
+create policy "Users can manage own profile"
 on "public"."UserProfile"
 as permissive
-for insert
-to authenticated
-with check ((id = auth.uid()));
-
-
-create policy "Allow users to update their own profile"
-on "public"."UserProfile"
-as permissive
-for update
+for all
 to authenticated
 using ((id = auth.uid()))
 with check ((id = auth.uid()));
 
 
-create policy "Enable read access for all users"
-on "public"."UserProfile"
+create policy "Admins can manage admin users"
+on "public"."userAdmins"
 as permissive
-for select
-to public
-using (true);
+for all
+to authenticated
+using (is_admin())
+with check (is_admin());
 
 
-create policy "Allow individual user access to own admin status"
+create policy "Users can view own admin status"
 on "public"."userAdmins"
 as permissive
 for select
@@ -614,5 +743,43 @@ using (("userId" = auth.uid()));
 
 
 CREATE TRIGGER registration_changes_update_user_rating_trigger AFTER INSERT OR DELETE OR UPDATE ON public."Registration" FOR EACH ROW EXECUTE FUNCTION update_user_current_rating_from_registration();
+
+
+grant delete on table "storage"."s3_multipart_uploads" to "postgres";
+
+grant insert on table "storage"."s3_multipart_uploads" to "postgres";
+
+grant references on table "storage"."s3_multipart_uploads" to "postgres";
+
+grant select on table "storage"."s3_multipart_uploads" to "postgres";
+
+grant trigger on table "storage"."s3_multipart_uploads" to "postgres";
+
+grant truncate on table "storage"."s3_multipart_uploads" to "postgres";
+
+grant update on table "storage"."s3_multipart_uploads" to "postgres";
+
+grant delete on table "storage"."s3_multipart_uploads_parts" to "postgres";
+
+grant insert on table "storage"."s3_multipart_uploads_parts" to "postgres";
+
+grant references on table "storage"."s3_multipart_uploads_parts" to "postgres";
+
+grant select on table "storage"."s3_multipart_uploads_parts" to "postgres";
+
+grant trigger on table "storage"."s3_multipart_uploads_parts" to "postgres";
+
+grant truncate on table "storage"."s3_multipart_uploads_parts" to "postgres";
+
+grant update on table "storage"."s3_multipart_uploads_parts" to "postgres";
+
+create policy "Allow admins full access to all buckets"
+on "storage"."objects"
+as permissive
+for all
+to authenticated
+using (is_admin())
+with check (is_admin());
+
 
 

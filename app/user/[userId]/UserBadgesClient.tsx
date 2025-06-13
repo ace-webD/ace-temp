@@ -1,115 +1,179 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Share2 } from 'lucide-react';
-import {
-    FacebookShareButton,
-    TwitterShareButton,
-    LinkedinShareButton,
-    WhatsappShareButton,
-    FacebookIcon,
-    TwitterIcon,
-    LinkedinIcon,
-    WhatsappIcon,
-} from 'react-share';
-import type { Tables } from '@/lib/supabase/database.types';
-import { createClient } from '@/lib/supabase/client';
-import { useParams } from 'next/navigation';
+import { Share2 } from "lucide-react";
+import { toast } from "sonner";
+import { ShareButton } from "@/components/ui/enhanced-share";
+import type { Tables } from "@/lib/supabase/database.types";
+import { createClient } from "@/lib/supabase/client";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 
-type UserBadgeWithImage = Tables<'UserBadge'> & {
-    Badge: Tables<'Badge'> & { imageUrl?: string }
-};
-
-interface UserBadgesClientProps {
-    badges: UserBadgeWithImage[];
+interface UserBadge extends Tables<"UserBadge"> {
+  Badge: Tables<"Badge">;
 }
 
-export default function UserBadgesClient({ badges }: UserBadgesClientProps) {
+interface Props {
+  badges: UserBadge[];
+}
 
-    const supabase = createClient();
-    const params = useParams();
-    const userId = params.userId; 
-    if (badges.length === 0) {
-        return <p className="text-muted-foreground">No badges earned yet.</p>;
-    }
+export function UserBadgesClient({ badges }: Props) {
+  const supabase = createClient();
+  const params = useParams();
+  const userId = params.userId;
+  const showToast = (message: string) => {
+    toast.success(message);
+  };
 
-    return (
-        <>
-            <div className="flex flex-wrap gap-6"> 
-                {badges.map((userBadge) => {
-                    const badgeUrl = typeof window !== 'undefined' ? `${window.location.origin}/user/${userId}` : ''; 
-                    const shareTitle = `Check out my ${userBadge.Badge.name} badge!`;
-                    const badgeDescription = userBadge.Badge.description ?? '';
-                    const publicIconUrl = supabase.storage.from('badges').getPublicUrl(userBadge.Badge.iconUrl).data.publicUrl;
-                    
-
-                    return (                        <Dialog key={userBadge.badgeId}>
-                            <div
-                                className="group relative w-32 h-32 rounded-lg shadow-sm overflow-hidden cursor-pointer"
-                            >
-                                <Image
-                                  className="w-full h-full object-cover"
-                                  src={publicIconUrl}
-                                  alt={userBadge.Badge.name}
-                                  width={128}
-                                  height={128}
-                                />
-                                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out bg-black/30 dark:bg-black/50 p-2">
-                                    <Link href={`/badges/${userBadge.Badge.id}`} passHref>
-                                        <span className="text-white text-sm font-semibold text-center mb-2 hover:underline cursor-pointer">
-                                            {userBadge.Badge.name}
-                                        </span>
-                                    </Link>
-                                    <DialogTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="text-white hover:text-primary hover:bg-white/20 cursor-pointer" 
-                                            aria-label={`Share ${userBadge.Badge.name} badge`}
-                                        >
-                                            <Share2 className="h-5 w-5" />
-                                        </Button>
-                                    </DialogTrigger>
-                                </div>
-                            </div>
-
-                            <DialogContent className="sm:max-w-[425px]">
-                                <DialogHeader>
-                                    <DialogTitle>Share &quot;{userBadge.Badge.name}&quot; Badge</DialogTitle>
-                                </DialogHeader>
-                                <div className="py-4">
-                                    <p className="text-sm text-muted-foreground mb-4">
-                                        Share your achievement with your friends and network!
-                                    </p>
-                                    <div className="flex justify-around items-center space-x-2">
-                                        <FacebookShareButton url={badgeUrl} hashtag={`#${userBadge.Badge.name.replace(/\s+/g, '')}`} className="cursor-pointer">
-                                            <FacebookIcon size={32} round />
-                                        </FacebookShareButton>
-                                        <TwitterShareButton url={badgeUrl} title={shareTitle} className="cursor-pointer">
-                                            <TwitterIcon size={32} round />
-                                        </TwitterShareButton>
-                                        <LinkedinShareButton url={badgeUrl} title={shareTitle} summary={badgeDescription} className="cursor-pointer">
-                                            <LinkedinIcon size={32} round />
-                                        </LinkedinShareButton>
-                                        <WhatsappShareButton url={badgeUrl} title={shareTitle} separator=":: " className="cursor-pointer">
-                                            <WhatsappIcon size={32} round />
-                                        </WhatsappShareButton>
-                                    </div>
-                                </div>
-                            </DialogContent>
-                        </Dialog>
-                    );
-                })}
-            </div>
-        </>
+  const createShareContent = (userBadge: UserBadge) => {
+    const badgeName = userBadge.Badge.name;
+    const badgeDescription = userBadge.Badge.description;
+    const earnedDate = new Date(userBadge.earnedAt).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
     );
+
+    const userProfileUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/user/${userId}`
+        : "";
+
+    const shareTitle = `Just earned my "${badgeName}" badge!`;
+    const shareText = `Just earned my "${badgeName}" badge!
+
+${
+  badgeDescription
+    ? `${badgeDescription}
+
+`
+    : ""
+}Earned on: ${earnedDate}
+
+Check out my profile to see all my achievements!
+${userProfileUrl}`;
+
+    return {
+      url: userProfileUrl,
+      title: shareTitle,
+      text: shareText,
+      earnedDate,
+    };
+  };
+
+  if (badges.length === 0) {
+    return <p className="text-muted-foreground">No badges earned yet.</p>;
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {badges.map((userBadge) => {
+          const shareContent = createShareContent(userBadge);
+
+          const publicIconUrl = supabase.storage
+            .from("badges")
+            .getPublicUrl(userBadge.Badge.iconUrl).data.publicUrl;
+          return (
+            <Dialog key={userBadge.badgeId}>
+              {" "}
+              <div className="relative flex flex-col items-center space-y-3 p-4 bg-card rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+                <DialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-8 w-8 opacity-60 hover:opacity-100 transition-opacity duration-200"
+                    aria-label={`Share ${userBadge.Badge.name} badge`}
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+
+                <div className="w-28 h-28 rounded-lg overflow-hidden flex items-center justify-center">
+                  <Image
+                    className="w-full h-full object-contain"
+                    src={publicIconUrl}
+                    alt={userBadge.Badge.name}
+                    width={112}
+                    height={112}
+                  />
+                </div>
+
+                <div className="text-center space-y-1 w-full">
+                  <Link href={`/badges/${userBadge.Badge.id}`} passHref>
+                    <h3 className="text-sm font-semibold text-foreground hover:text-primary cursor-pointer transition-colors duration-200 line-clamp-2">
+                      {userBadge.Badge.name}
+                    </h3>
+                  </Link>
+
+                  <p className="text-xs text-muted-foreground">
+                    {shareContent.earnedDate}
+                  </p>
+                </div>
+              </div>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    Share Your Badge
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="py-4">
+                  <div className="bg-muted/50 rounded-lg p-4 mb-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Image
+                        src={publicIconUrl}
+                        alt={userBadge.Badge.name}
+                        width={40}
+                        height={40}
+                        className="rounded-lg"
+                      />
+                      <div>
+                        <h4 className="font-semibold">
+                          {userBadge.Badge.name}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          Earned on {shareContent.earnedDate}
+                        </p>
+                      </div>
+                    </div>
+                    {userBadge.Badge.description && (
+                      <p className="text-sm text-muted-foreground">
+                        {userBadge.Badge.description}
+                      </p>
+                    )}
+                  </div>{" "}
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Share your achievement with your friends and network!
+                  </p>{" "}
+                    <div className="flex justify-around items-center space-x-2">
+                    {["whatsapp", "twitter", "linkedin", "generic"].map((platform) => (
+                      <ShareButton
+                      key={platform}
+                      platform={platform as any}
+                      url={shareContent.url}
+                      title={shareContent.title}
+                      text={shareContent.text}
+                      showToast={showToast}
+                      />
+                    ))}
+                    </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          );
+        })}
+      </div>
+    </>
+  );
 }
