@@ -9,6 +9,9 @@ import {
   WhatsappIcon,
 } from "react-share";
 
+// Note: For client components, you can import CONFIG if needed for static values
+// but for dynamic URLs, they should be passed as props from server components
+
 type SharePlatform = "whatsapp" | "twitter" | "linkedin" | "generic";
 
 interface ShareButtonProps {
@@ -66,14 +69,10 @@ export const ShareButton = ({
           <TwitterIcon size={32} round />
         </TwitterShareButton>
       );
-
     case "linkedin":
       return (
         <LinkedinShareButton
           url={url}
-          title={title}
-          summary={text}
-          source="ACE | SASTRA"
           className={`cursor-pointer `}
         >
           <LinkedinIcon size={32} round />

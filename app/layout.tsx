@@ -5,14 +5,14 @@ import { ThemeProvider } from "@/components/layout/theme-provider";
 import { MainLayoutWrapper } from "@/components/layout/MainLayoutWrapper";
 import { AuthProvider } from "@/components/context/AuthContext";
 import { createClient } from "@/lib/supabase/server";
+import { CONFIG, getSiteUrl } from "@/lib/config";
 import type { User } from "@supabase/supabase-js";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ACE SASTRA",
-  description:
-    "ACE is a student-run club established with the aim of promoting excellence in computing education and research. We are a community of passionate individuals who believe in the power of technology to transform the world.",
+  title: CONFIG.site.name,
+  description: CONFIG.site.description,
   keywords: [
     "ACE",
     "SASTRA",
@@ -23,15 +23,15 @@ export const metadata: Metadata = {
     "Education",
     "Research",
   ],
-  authors: [{ name: "ACE SASTRA" }],
-  creator: "ACE SASTRA",
-  publisher: "ACE SASTRA",
+  authors: [{ name: CONFIG.site.name }],
+  creator: CONFIG.site.name,
+  publisher: CONFIG.site.name,
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://ace-temp.vercel.app"),
+  metadataBase: new URL(CONFIG.site.url),
   alternates: {
     canonical: "/",
   },
@@ -39,23 +39,19 @@ export const metadata: Metadata = {
     title: "ACE SASTRA - Excellence in Computing Education",
     description:
       "Join ACE SASTRA, a premier student-run computing club promoting excellence in technology education and research. Connect with passionate tech enthusiasts and innovators.",
-    url: "https://ace-temp.vercel.app",
-    siteName: "ACE SASTRA",
+    url: CONFIG.site.url,
+    siteName: CONFIG.site.name,
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "/ACE_SVG_original.svg",
+        url: "/ACE_SVG_original.png",
         width: 800,
         height: 600,
         alt: "ACE SASTRA Original Logo",
-        type: "image/svg+xml",
+        type: "image/png",
       },
     ],
-  },
-
-  icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
 };
 
