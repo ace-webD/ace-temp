@@ -17,18 +17,13 @@ import { createClient } from "@/lib/supabase/client";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 
-interface UserBadge extends Tables<"UserBadge"> {
+type UserBadge = Tables<"UserBadge"> & {
   Badge: Tables<"Badge">;
-}
+};
 
-interface Props {
-  badges: UserBadge[];
-}
-
-export function UserBadgesClient({ badges }: Props) {
+export function UserBadgesClient({ badges }: { badges: UserBadge[] }) {
   const supabase = createClient();
-  const params = useParams();
-  const userId = params.userId;
+  const { userId } = useParams();
   const showToast = (message: string) => {
     toast.success(message);
   };
@@ -61,8 +56,7 @@ ${
     : ""
 }Earned on: ${earnedDate}
 
-Check out my profile to see all my achievements!
-${userProfileUrl}`;
+Check out my profile to see all my achievements!`;
 
     return {
       url: userProfileUrl,
@@ -156,18 +150,20 @@ ${userProfileUrl}`;
                   <p className="text-sm text-muted-foreground mb-4">
                     Share your achievement with your friends and network!
                   </p>{" "}
-                    <div className="flex justify-around items-center space-x-2">
-                    {["whatsapp", "twitter", "linkedin", "generic"].map((platform) => (
-                      <ShareButton
-                      key={platform}
-                      platform={platform as any}
-                      url={shareContent.url}
-                      title={shareContent.title}
-                      text={shareContent.text}
-                      showToast={showToast}
-                      />
-                    ))}
-                    </div>
+                  <div className="flex justify-around items-center space-x-2">
+                    {["whatsapp", "twitter", "linkedin", "generic"].map(
+                      (platform) => (
+                        <ShareButton
+                          key={platform}
+                          platform={platform as any}
+                          url={shareContent.url}
+                          title={shareContent.title}
+                          text={shareContent.text}
+                          showToast={showToast}
+                        />
+                      )
+                    )}
+                  </div>
                 </div>
               </DialogContent>
             </Dialog>
