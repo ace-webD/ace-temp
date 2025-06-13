@@ -23,6 +23,40 @@ export const metadata: Metadata = {
     "Education",
     "Research",
   ],
+  authors: [{ name: "ACE SASTRA" }],
+  creator: "ACE SASTRA",
+  publisher: "ACE SASTRA",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://ace-temp.vercel.app"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "ACE SASTRA - Excellence in Computing Education",
+    description:
+      "Join ACE SASTRA, a premier student-run computing club promoting excellence in technology education and research. Connect with passionate tech enthusiasts and innovators.",
+    url: "https://ace-temp.vercel.app",
+    siteName: "ACE SASTRA",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/ACE_SVG_original.svg",
+        width: 800,
+        height: 600,
+        alt: "ACE SASTRA Original Logo",
+        type: "image/svg+xml",
+      },
+    ],
+  },
+
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
 };
 
 async function getInitialUser(): Promise<User | null> {
@@ -42,7 +76,11 @@ async function getInitialUser(): Promise<User | null> {
     return user;
   } catch (error) {
     // Only log if it's not an AuthSessionMissingError
-    if (error && !(error as any).__isAuthError && (error as any).status !== 400) {
+    if (
+      error &&
+      !(error as any).__isAuthError &&
+      (error as any).status !== 400
+    ) {
       console.error("Failed to get initial user:", error);
     }
     return null;
