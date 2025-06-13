@@ -40,9 +40,9 @@ export function UserBadgesClient({ badges }: { badges: UserBadge[] }) {
       }
     );
 
-    const userProfileUrl =
+    const badgeShareUrl =
       typeof window !== "undefined"
-        ? `${window.location.origin}/user/${userId}`
+        ? `${window.location.origin}/user/${userId}/badge/${userBadge.badgeId}`
         : "";
 
     const shareTitle = `Just earned my "${badgeName}" badge!`;
@@ -59,7 +59,7 @@ ${
 Check out my profile to see all my achievements!`;
 
     return {
-      url: userProfileUrl,
+      url: badgeShareUrl,
       title: shareTitle,
       text: shareText,
       earnedDate,

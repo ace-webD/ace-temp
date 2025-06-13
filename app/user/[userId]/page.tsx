@@ -87,7 +87,7 @@ async function fetchUpcomingRegisteredEventsData(
     `
     )
     .eq("userId", userId)
-    .in("Event.status", ["OPEN", "CLOSED"]) // Changed to filter by Event.status = 'OPEN' or any other non-'DONE' status relevant for upcoming
+    .in("Event.status", ["OPEN", "CLOSED"]) 
     .order("startTime", { foreignTable: "Event", ascending: true });
 
   if (error) {
@@ -112,12 +112,9 @@ export async function generateMetadata({
       description: "The requested user profile could not be found.",
     };
   }
-  const userDisplayName = userProfile.name;
 
-  const userBadges = await fetchUserBadgesData(params.userId, supabase);
-  const badgeCount = userBadges.length;
-  const title = `${userDisplayName} - ACE SASTRA Member`;
-  const description = `View ${userDisplayName}'s profile at ACE SASTRA. ${userProfile.department} Department, Year ${userProfile.year}. ${badgeCount} badges earned. Join our community of tech enthusiasts and innovators.`;
+  const title = `${userProfile.name} - ACE SASTRA Member`;
+  const description = `View ${userProfile.name}'s profile at ACE SASTRA.`;
   const url = getAbsoluteUrl(`/user/${params.userId}`);
 
   return {
@@ -130,21 +127,6 @@ export async function generateMetadata({
       siteName: CONFIG.site.name,
       locale: "en_US",
       type: "profile",
-      images: [
-        {
-          url: "/ACE_SVG_original.png",
-          width: 800,
-          height: 600,
-          alt: `${userDisplayName}'s profile picture`,
-          type: "image/png",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: ["/ACE_SVG_original.png"],
     },
   };
 }
