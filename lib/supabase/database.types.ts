@@ -229,6 +229,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_admin_user: {
+        Args: { user_email: string }
+        Returns: boolean
+      }
       create_new_user_profile: {
         Args: {
           p_user_id: string
@@ -239,20 +243,16 @@ export type Database = {
         }
         Returns: undefined
       }
-      custom_access_token_hook: {
-        Args: { event: Json }
-        Returns: Json
-      }
-      custom_claims_get: {
-        Args: { claim_name: string }
-        Returns: Json
-      }
       get_dashboard_stats: {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
       is_admin: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      remove_admin_user: {
+        Args: { user_email: string }
         Returns: boolean
       }
     }
