@@ -1,19 +1,15 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { createClient } from "@/lib/supabase/server";
+import { CONFIG, getAbsoluteUrl } from "@/lib/config";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Tables } from "@/lib/supabase/database.types";
 import { UserBadgesClient } from "./UserBadgesClient";
 
-type UserProfile = Tables<"UserProfile">; 
+type UserProfile = Tables<"UserProfile">;
 type UserBadge = Tables<"UserBadge"> & { Badge: Tables<"Badge"> };
 type Event = Tables<"Event">;
 type Registration = Tables<"Registration">;
@@ -101,6 +97,58 @@ async function fetchUpcomingRegisteredEventsData(
   return data as (Registration & { Event: Event })[];
 }
 
+// Generate dynamic metadata for user profile pages
+export async function generateMetadata({
+  params: paramsFromProps,
+}: {
+  params: Promise<{ userId: string }>;
+}): Promise<Metadata> {
+  const params = await paramsFromProps;
+  const supabase = await createClient();
+  const userProfile = await fetchUserProfileData(params.userId, supabase);
+  if (!userProfile) {
+    return {
+      title: "User Not Found - ACE SASTRA",
+      description: "The requested user profile could not be found.",
+    };
+  }
+  const userDisplayName = userProfile.name;
+
+  const userBadges = await fetchUserBadgesData(params.userId, supabase);
+  const badgeCount = userBadges.length;
+  const title = `${userDisplayName} - ACE SASTRA Member`;
+  const description = `View ${userDisplayName}'s profile at ACE SASTRA. ${userProfile.department} Department, Year ${userProfile.year}. ${badgeCount} badges earned. Join our community of tech enthusiasts and innovators.`;
+  const url = getAbsoluteUrl(`/user/${params.userId}`);
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: CONFIG.site.name,
+      locale: "en_US",
+      type: "profile",
+      images: [
+        {
+          url: "/ACE_SVG_original.png",
+          width: 800,
+          height: 600,
+          alt: `${userDisplayName}'s profile picture`,
+          type: "image/png",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/ACE_SVG_original.png"],
+    },
+  };
+}
+
 export default async function UserProfilePage({
   params: paramsFromProps,
 }: {
@@ -137,7 +185,9 @@ export default async function UserProfilePage({
     <div className="container mx-auto p-4 sm:p-6 md:p-8">
       <Card className="mb-8 shadow-lg border border-border/20 bg-gradient-to-br from-background via-background to-muted/20">
         <CardContent className="p-8">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">            {/* User Avatar and Basic Info */}
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            {" "}
+            {/* User Avatar and Basic Info */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 flex-1">
               <Avatar className="h-20 w-20 sm:h-32 sm:w-32 ring-4 ring-primary/20 shadow-xl border-4 border-background">
                 <AvatarImage src={undefined} alt={userProfile.name || "User"} />
@@ -175,7 +225,6 @@ export default async function UserProfilePage({
                 </div>
               </div>
             </div>
-
             {/* Rating Card */}
             <div className="w-full lg:w-auto lg:flex-shrink-0">
               <div className="bg-gradient-to-br from-primary/15 to-primary/5 border-2 border-primary/25 rounded-2xl p-6 text-center shadow-xl relative overflow-hidden min-w-[220px]">
@@ -200,7 +249,7 @@ export default async function UserProfilePage({
                   )}
                 </div>
                 <p className="text-xs text-primary/70 font-bold uppercase tracking-wider">
-                  Current Rating 
+                  Current Rating
                 </p>
               </div>
             </div>
