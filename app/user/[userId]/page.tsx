@@ -87,7 +87,7 @@ async function fetchUpcomingRegisteredEventsData(
     `
     )
     .eq("userId", userId)
-    .in("Event.status", ["OPEN", "CLOSED"]) // Changed to filter by Event.status = 'OPEN' or any other non-'DONE' status relevant for upcoming
+    .in("Event.status", ["OPEN", "CLOSED"]) 
     .order("startTime", { foreignTable: "Event", ascending: true });
 
   if (error) {
