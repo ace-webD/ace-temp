@@ -289,29 +289,30 @@ export default async function UserProfilePage({
             <div className="max-h-80 overflow-y-auto scrollbar-thin">
               {eventHistory.length > 0 ? (
                 <div className="space-y-3">
-                  {eventHistory.map((eventReg) => (
-                    <div
+                  {eventHistory.map((eventReg) => (                    <div
                       key={eventReg.id}
                       className="p-3 rounded-lg border border-border/50 hover:border-primary/20 hover:bg-muted/50 transition-all duration-200"
                     >
-                      <Link
-                        href={`/events/${eventReg.Event.id}`}
-                        className="block"
-                      >
-                        <h4 className="font-medium text-foreground hover:text-primary transition-colors">
-                          {eventReg.Event.name}
-                        </h4>
-                        <div className="flex items-center justify-between mt-1">
-                          <p className="text-sm text-muted-foreground">
+                      <div className="flex items-center justify-between">
+                        <Link
+                          href={`/events/${eventReg.Event.id}`}
+                          className="flex-1"
+                        >
+                          <h4 className="font-medium text-foreground hover:text-primary transition-colors">
+                            {eventReg.Event.name}
+                          </h4>
+                          <p className="text-sm text-muted-foreground mt-1">
                             {formatDate(eventReg.Event.startTime)}
                           </p>
-                          {eventReg.points && (
+                        </Link>
+                        {eventReg.points && (
+                          <div className="flex items-center justify-center ml-4">
                             <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
                               +{eventReg.points} pts
                             </span>
-                          )}
-                        </div>
-                      </Link>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
