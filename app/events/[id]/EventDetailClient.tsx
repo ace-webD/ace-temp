@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Loader } from 'lucide-react';
+import { Loader } from '@/components/ui/loader';
 import type { Tables, TablesInsert } from '@/lib/supabase/database.types';
 import { createClient } from '@/lib/supabase/client';
 // Define a type for participants that includes registration date and points
