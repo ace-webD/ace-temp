@@ -1,14 +1,11 @@
 "use client";
 import { motion } from 'framer-motion';
-import { HoverEffect } from '@/components/ui/card-hover-effect'; // Assuming this is the correct path
+import { HoverEffect } from '@/components/ui/card-hover-effect'; 
 
-// Define the type for individual cluster items if not already defined in card-hover-effect.tsx
-// If it is defined and exported from there, you can import it directly.
 interface ClusterItem {
   title: string;
   description: string;
   imageUrl: string;
-  link?: string;
 }
 
 const clusterData: ClusterItem[] = [
@@ -74,7 +71,7 @@ const clusterData: ClusterItem[] = [
     },
 ];
 
-export default function ClustersClientView() { // Removed props as data is hardcoded
+export default function ClustersClientView() { 
   const pageVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.5 } },

@@ -3,20 +3,14 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge as UiBadge } from '@/components/ui/badge'; // Alias to avoid conflict
+import { Badge as UiBadge } from '@/components/ui/badge';
 import { Tables } from '@/lib/supabase/database.types';
-import { createClient } from '@/lib/supabase/client'; // For client-side Supabase access
 
-type BadgeWithSupabaseClient = Tables<'Badge'> & {
-  // Supabase client might not be needed directly in the type if used within the component
+type Badge = Tables<'Badge'> & {
+  publicIconUrl: string | null;
 };
 
-const BadgeItem = ({ badge }: { badge: BadgeWithSupabaseClient }) => {
-  const supabaseClient = createClient(); // Initialize client for storage URL
-  const publicIconUrl = badge.iconUrl
-    ? supabaseClient.storage.from('badges').getPublicUrl(badge.iconUrl).data.publicUrl
-    : null;
-
+const AnimatedBadgeItem = ({ badge }: { badge: Badge }) => {
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -27,9 +21,9 @@ const BadgeItem = ({ badge }: { badge: BadgeWithSupabaseClient }) => {
       <Link href={`/badges/${badge.id}`} passHref>
         <Card className="group h-full flex flex-col overflow-hidden rounded-lg shadow-md hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer border border-border/40 hover:border-primary/60">
           <CardHeader className="p-0 items-center justify-center aspect-[4/3] relative overflow-hidden bg-muted/30">
-            {publicIconUrl ? (
+            {badge.publicIconUrl ? (
               <Image
-                src={publicIconUrl}
+                src={badge.publicIconUrl}
                 alt={`${badge.name} badge icon`}
                 fill
                 className="object-contain p-6 transition-transform duration-300 group-hover:scale-105"
@@ -61,7 +55,7 @@ const BadgeItem = ({ badge }: { badge: BadgeWithSupabaseClient }) => {
   );
 };
 
-export default function BadgesClientView({ badges }: { badges: BadgeWithSupabaseClient[] }) {
+export default function BadgesClientView({ badges }: { badges: Badge[] }) {
   const pageVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.5 } },
@@ -119,7 +113,7 @@ export default function BadgesClientView({ badges }: { badges: BadgeWithSupabase
           animate="visible"
         >
           {badges.map((badge) => (
-            <BadgeItem key={badge.id} badge={badge} />
+            <AnimatedBadgeItem key={badge.id} badge={badge} />
           ))}
         </motion.div>
       ) : (

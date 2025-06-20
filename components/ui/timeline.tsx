@@ -4,7 +4,7 @@ import {
   useScroll,
   useTransform,
   motion,
-} from "motion/react";
+} from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {

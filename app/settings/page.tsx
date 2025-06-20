@@ -8,7 +8,7 @@ type UserProfile = Tables<'UserProfile'>;
 
 export default async function SettingsPage() {
     const supabase = await createClient();
-    const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+    const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();          
 
     if (authError || !authUser) {
         console.log('SettingsPage: No authenticated user, redirecting to login.');

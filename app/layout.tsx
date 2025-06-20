@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/theme-provider";
-import { MainLayoutWrapper } from "@/components/layout/MainLayoutWrapper";
+import { Navbar } from "@/components/layout/navbar";
+import { FooterSection } from "@/components/layout/sections/footer";
+import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/context/AuthContext";
-import { createClient } from "@/lib/supabase/server";
-import { CONFIG, getSiteUrl } from "@/lib/config";
-import type { User } from "@supabase/supabase-js";
+import { CONFIG } from "@/lib/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -55,40 +55,11 @@ export const metadata: Metadata = {
   },
 };
 
-async function getInitialUser(): Promise<User | null> {
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
-
-    // Only log errors that are not related to missing auth sessions
-    // Missing auth sessions are expected for unauthenticated users
-    if (error && error.message !== "Auth session missing!") {
-      console.error("Error fetching user:", error);
-    }
-
-    return user;
-  } catch (error) {
-    // Only log if it's not an AuthSessionMissingError
-    if (
-      error &&
-      !(error as any).__isAuthError &&
-      (error as any).status !== 400
-    ) {
-      console.error("Failed to get initial user:", error);
-    }
-    return null;
-  }
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const initialUser = await getInitialUser();
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -98,9 +69,11 @@ export default async function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >
-          <AuthProvider initialUser={initialUser}>
-            <MainLayoutWrapper>{children}</MainLayoutWrapper>
+        >          <AuthProvider>
+            <Navbar />
+            <main className="min-h-screen grow lg:pt-16">{children}</main>
+            <FooterSection />
+            <Toaster position="top-right" richColors closeButton />
           </AuthProvider>
         </ThemeProvider>
       </body>
