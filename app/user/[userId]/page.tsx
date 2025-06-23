@@ -87,7 +87,7 @@ async function fetchUpcomingRegisteredEventsData(
     `
     )
     .eq("userId", userId)
-    .in("Event.status", ["OPEN", "CLOSED"]) 
+    .in("Event.status", ["OPEN", "CLOSED"])
     .order("startTime", { foreignTable: "Event", ascending: true });
 
   if (error) {
@@ -211,24 +211,29 @@ export default async function UserProfilePage({
             <div className="w-full lg:w-auto lg:flex-shrink-0">
               <div className="bg-gradient-to-br from-primary/15 to-primary/5 border-2 border-primary/25 rounded-2xl p-6 text-center shadow-xl relative overflow-hidden min-w-[220px]">
                 <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full animate-pulse shadow-lg"></div>
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent"></div>{" "}
                 <div className="relative">
                   <p className="text-5xl font-bold text-primary mb-3 leading-none">
-                    {userProfile.currentRating ?? "N/A"}
+                    {userProfile.currentRating !== null &&
+                    userProfile.currentRating !== undefined
+                      ? userProfile.currentRating
+                      : "N/A"}
                   </p>
-                  {userProfile.currentRating && (
-                    <div className="w-full bg-primary/15 rounded-full h-3 mb-2 shadow-inner">
-                      <div
-                        className="bg-gradient-to-r from-primary to-primary/80 h-3 rounded-full transition-all duration-1000 ease-out shadow-sm"
-                        style={{
-                          width: `${Math.min(
-                            (userProfile.currentRating / 5) * 100,
-                            100
-                          )}%`,
-                        }}
-                      ></div>
-                    </div>
-                  )}
+                  {userProfile.currentRating !== null &&
+                    userProfile.currentRating !== undefined &&
+                    userProfile.currentRating > 0 && (
+                      <div className="w-full bg-primary/15 rounded-full h-3 mb-2 shadow-inner">
+                        <div
+                          className="bg-gradient-to-r from-primary to-primary/80 h-3 rounded-full transition-all duration-1000 ease-out shadow-sm"
+                          style={{
+                            width: `${Math.min(
+                              (userProfile.currentRating / 5) * 100,
+                              100
+                            )}%`,
+                          }}
+                        ></div>
+                      </div>
+                    )}
                 </div>
                 <p className="text-xs text-primary/70 font-bold uppercase tracking-wider">
                   Current Rating
@@ -287,9 +292,11 @@ export default async function UserProfilePage({
           </CardHeader>
           <CardContent>
             <div className="max-h-80 overflow-y-auto scrollbar-thin">
+              {" "}
               {eventHistory.length > 0 ? (
                 <div className="space-y-3">
-                  {eventHistory.map((eventReg) => (                    <div
+                  {eventHistory.map((eventReg) => (
+                    <div
                       key={eventReg.id}
                       className="p-3 rounded-lg border border-border/50 hover:border-primary/20 hover:bg-muted/50 transition-all duration-200"
                     >

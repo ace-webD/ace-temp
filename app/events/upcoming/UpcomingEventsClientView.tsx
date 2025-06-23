@@ -7,30 +7,29 @@ import { motion } from 'framer-motion';
 import type { Tables, Enums } from '@/lib/supabase/database.types';
 import { createClient } from '@/lib/supabase/client';
 import { Card, CardHeader } from "@/components/ui/card"; 
+import { formatEventDate } from '@/lib/utils/date';
+
 type SupabaseEvent = Tables<'Event'> & {
   type: Enums<'EventType'>;
 };
 
 const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
   const supabaseClient = createClient();
-  let formattedStartTime: string | undefined = undefined;
-  if (event.startTime) {
-    const date = new Date(event.startTime);
-    const day = date.getDate();
-    const month = date.toLocaleString('default', { month: 'short' });
-    const year = date.getFullYear();
+  
+  // Use utility function for date formatting with time
+  const formatEventDateTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    const dateOnly = formatEventDate(dateString);
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
     const formattedHours = hours % 12 || 12;
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+    
+    return `${dateOnly}, ${formattedHours}:${formattedMinutes} ${ampm}`;
+  };
 
-    let daySuffix = 'th';
-    if (day === 1 || day === 21 || day === 31) daySuffix = 'st';
-    else if (day === 2 || day === 22) daySuffix = 'nd';
-    else if (day === 3 || day === 23) daySuffix = 'rd';
-    formattedStartTime = `${day}${daySuffix} ${month} ${year}, ${formattedHours}:${formattedMinutes} ${ampm}`;
-  }
+  const formattedStartTime = event.startTime ? formatEventDateTime(event.startTime) : undefined;
 
   const typeBadgeClasses = {
     CONTEST: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',

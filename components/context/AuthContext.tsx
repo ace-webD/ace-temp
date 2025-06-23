@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User, SupabaseClient } from '@supabase/supabase-js';
+import { Loader } from '@/components/ui/loader';
 
 interface AuthContextType {
   supabase: SupabaseClient;
@@ -16,27 +17,39 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
-  initialUser?: User | null; // Add initialUser prop
 }
 
-export const AuthProvider = ({ children, initialUser = null }: AuthProviderProps) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const supabase = createClient();
-  const [user, setUser] = useState<User | null>(initialUser);
-  // Since initialUser is always provided by RootLayout (either User or null),
-  // the initial auth state is known. So, loading should start as false.
-  const [loading, setLoading] = useState<boolean>(false);
-
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
-    let isMounted = true; // Prevent state updates on unmounted component
+    let isMounted = true;   
+    const getInitialSession = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+          if (isMounted) {
+          if (error) {
+            // This is expected for anonymous users or expired sessions
+            console.warn("AuthContext: No authenticated user found:", error.message);
+          }
+          setUser(user ?? null);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("AuthContext: Failed to get initial user:", error);
+          setUser(null);
+          setLoading(false);
+        }
+      }
+    };
 
-    // No need to call getSession() here if initialUser is always provided
-    // by RootLayout, as that establishes the initial auth state.
+    getInitialSession();
 
-    // Listen for auth state changes.
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (isMounted) {
         setUser(session?.user ?? null);
-        // Ensure loading is false after any auth state change.
         setLoading(false);
       }
     });
@@ -45,7 +58,7 @@ export const AuthProvider = ({ children, initialUser = null }: AuthProviderProps
       isMounted = false;
       authListener?.subscription.unsubscribe();
     };
-  }, [supabase]); // Dependency array updated. initialUser is for initial state.
+  }, [supabase]);
 
   const login = async () => {
     setLoading(true);
@@ -66,12 +79,11 @@ export const AuthProvider = ({ children, initialUser = null }: AuthProviderProps
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("AuthContext: Logout error:", error.message);
-      setLoading(false); // Ensure loading is set to false on error
+      setLoading(false); 
     }
     setUser(null);
     setLoading(false);
   };
-
   return (
     <AuthContext.Provider value={{ supabase, user, loading, login, logout }}>
       {children}

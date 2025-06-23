@@ -1,12 +1,14 @@
 import { createClient } from '@/lib/supabase/server';
 import { Tables } from '@/lib/supabase/database.types';
-import Link from 'next/link';
-import { Badge as UiBadge } from '@/components/ui/badge'; // Alias to avoid conflict with type
 import BadgesClientView from './BadgesClientView';
 
-type Badge = Tables<'Badge'>;
+type Badge = Tables<'Badge'> & {
+  publicIconUrl: string | null;
+};
 
-async function fetchAllBadges(supabase: any): Promise<Badge[]> {
+async function fetchAndProcessBadges(): Promise<Badge[]> {
+  const supabase = await createClient();
+  
   const { data, error } = await supabase
     .from('Badge')
     .select('*')
@@ -16,7 +18,14 @@ async function fetchAllBadges(supabase: any): Promise<Badge[]> {
     console.error('Error fetching badges:', error);
     return [];
   }
-  return data;
+
+  // Add public URLs to existing badge data
+  return data.map((badge) => ({
+    ...badge,
+    publicIconUrl: badge.iconUrl
+      ? supabase.storage.from('badges').getPublicUrl(badge.iconUrl).data.publicUrl
+      : null,
+  }));
 }
 
 export const metadata = {
@@ -25,8 +34,7 @@ export const metadata = {
 };
 
 export default async function BadgesPage() {
-  const supabase = await createClient();
-  const badges = await fetchAllBadges(supabase);
+  const badges = await fetchAndProcessBadges();
 
-  return <BadgesClientView badges={badges} />
+  return <BadgesClientView badges={badges} />;
 }
