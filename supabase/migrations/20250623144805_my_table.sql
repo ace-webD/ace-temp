@@ -98,11 +98,13 @@ CREATE UNIQUE INDEX "UserBadge_pkey" ON public."UserBadge" USING btree (id);
 
 CREATE UNIQUE INDEX "UserBadge_userId_badgeId_key" ON public."UserBadge" USING btree ("userId", "badgeId");
 
-CREATE INDEX "UserProfile_id_idx" ON public."UserProfile" USING btree (id);
-
 CREATE UNIQUE INDEX "UserProfile_pkey" ON public."UserProfile" USING btree (id);
 
 CREATE UNIQUE INDEX "UserProfile_registrationNumber_key" ON public."UserProfile" USING btree ("registrationNumber");
+
+CREATE INDEX idx_registration_eventid ON public."Registration" USING btree ("eventId");
+
+CREATE INDEX idx_userbadge_badgeid ON public."UserBadge" USING btree ("badgeId");
 
 CREATE UNIQUE INDEX "userAdmins_pkey" ON public."userAdmins" USING btree ("userId");
 
@@ -160,6 +162,7 @@ CREATE OR REPLACE FUNCTION public.add_admin_user(user_email text)
  RETURNS boolean
  LANGUAGE plpgsql
  SECURITY DEFINER
+ SET search_path TO ''
 AS $function$
 DECLARE
     target_user_id uuid;
@@ -196,6 +199,7 @@ CREATE OR REPLACE FUNCTION public.create_new_user_profile(p_user_id uuid, p_name
  RETURNS void
  LANGUAGE plpgsql
  SECURITY DEFINER
+ SET search_path TO ''
 AS $function$
 BEGIN
     INSERT INTO public."UserProfile" ("id", "name", "registrationNumber", "year", "department")
@@ -205,10 +209,85 @@ END;
 $function$
 ;
 
+CREATE OR REPLACE FUNCTION public.create_user_profile_on_signup()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO ''
+AS $function$
+DECLARE
+  registration_number text;
+  year_digits text;
+  calculated_year integer;
+  dept_code text;
+  department_name text;
+  dept_map jsonb := '{
+    "001": "B.Tech. - Civil Engineering",
+    "002": "B.Tech. - Chemical Engineering",
+    "003": "B.Tech. - Computer Science & Engineering",
+    "004": "B.Tech. - Electronics & Communication Engineering",
+    "005": "B.Tech. - Electrical & Electronics Engineering",
+    "006": "B.Tech. - Electronics & Instrumentation Engineering",
+    "009": "B.Tech. - Mechanical Engineering",
+    "010": "B.Tech. - Biotechnology",
+    "011": "B.Tech. - Bioengineering",
+    "012": "B.Tech. - Mechatronics",
+    "013": "B.Tech. - Bioinformatics",
+    "014": "B.Tech. - Information & Communication Technology",
+    "015": "B.Tech. - Information Technology",
+    "017": "B.Tech. - Aerospace Engineering",
+    "018": "B.Tech. - Computer Science & Business Systems",
+    "156": "B.Tech. - CSE (AI & Data Science)",
+    "157": "B.Tech. - CSE (Cyber Security & Blockchain)",
+    "158": "B.Tech. - CSE (IoT & Automation)",
+    "159": "B.Tech. - EEE (Smart Grid & EVs)",
+    "160": "B.Tech. - ECE (Cyber Physical Systems)",
+    "161": "B.Tech. - Mechanical (Digital Manufacturing)",
+    "078": "M.Tech. - Medical Nanotechnology (5 Yrs Integrated)",
+    "123": "M.Tech. - Biotechnology (5 Yrs Integrated)"
+  }'::jsonb;
+BEGIN
+  -- Extract registration number from email
+  registration_number := split_part(NEW.email, '@', 1);
+  
+  -- Parse year from registration number
+  year_digits := substring(registration_number from 2 for 2);
+  calculated_year := 2000 + year_digits::integer;
+  
+  -- Parse department code
+  dept_code := substring(registration_number from 4 for 3);
+  department_name := COALESCE(dept_map->>dept_code, 'Unknown Department');
+  
+  -- Insert user profile
+  INSERT INTO public."UserProfile" (
+    id,
+    name,
+    registrationNumber,
+    year,
+    department
+  ) VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
+    registration_number,
+    calculated_year,
+    department_name
+  );
+  
+  RETURN NEW;
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Log the error but don't fail the user creation
+    RAISE WARNING 'Failed to create user profile for %: %', NEW.id, SQLERRM;
+    RETURN NEW;
+END;
+$function$
+;
+
 CREATE OR REPLACE FUNCTION public.get_dashboard_stats()
  RETURNS json
  LANGUAGE plpgsql
  SECURITY DEFINER
+ SET search_path TO ''
 AS $function$
 DECLARE
   user_count bigint;
@@ -234,6 +313,7 @@ CREATE OR REPLACE FUNCTION public.is_admin()
  RETURNS boolean
  LANGUAGE sql
  STABLE SECURITY DEFINER
+ SET search_path TO ''
 AS $function$
   SELECT COALESCE(
     (SELECT "isAdmin" 
@@ -248,6 +328,7 @@ CREATE OR REPLACE FUNCTION public.remove_admin_user(user_email text)
  RETURNS boolean
  LANGUAGE plpgsql
  SECURITY DEFINER
+ SET search_path TO ''
 AS $function$
 DECLARE
     target_user_id uuid;
@@ -272,6 +353,7 @@ $function$
 CREATE OR REPLACE FUNCTION public.update_user_current_rating_from_registration()
  RETURNS trigger
  LANGUAGE plpgsql
+ SET search_path TO ''
 AS $function$
 BEGIN
     IF (TG_OP = 'INSERT') THEN
@@ -294,6 +376,24 @@ BEGIN
         END IF;
     END IF;
     RETURN NULL;
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.validate_email_domain()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO ''
+AS $function$
+BEGIN
+  -- Only allow @sastra.ac.in emails
+  IF NEW.email IS NULL OR NOT NEW.email LIKE '%@sastra.ac.in' THEN
+    RAISE EXCEPTION 'Only @sastra.ac.in email addresses are allowed'
+      USING HINT = 'Please use your SASTRA university email address';
+  END IF;
+  
+  RETURN NEW;
 END;
 $function$
 ;
@@ -606,33 +706,24 @@ grant truncate on table "public"."userAdmins" to "supabase_auth_admin";
 
 grant update on table "public"."userAdmins" to "supabase_auth_admin";
 
-create policy "Admins can manage badges"
+create policy "Badge unified access policy"
 on "public"."Badge"
 as permissive
 for all
-to authenticated
-using (is_admin())
-with check (is_admin());
-
-
-create policy "Public can read badges"
-on "public"."Badge"
-as permissive
-for select
 to public
-using (true);
+using (true)
+with check (((( SELECT auth.role() AS role) = 'authenticated'::text) AND ( SELECT is_admin() AS is_admin)));
 
 
-create policy "Admins can manage contact messages"
+create policy "ContactMessage delete policy"
 on "public"."ContactMessage"
 as permissive
-for all
+for delete
 to authenticated
-using (is_admin())
-with check (is_admin());
+using (( SELECT is_admin() AS is_admin));
 
 
-create policy "Anyone can create contact messages"
+create policy "ContactMessage insert policy"
 on "public"."ContactMessage"
 as permissive
 for insert
@@ -640,106 +731,97 @@ to public
 with check (true);
 
 
-create policy "Admins can manage events"
+create policy "ContactMessage read policy"
+on "public"."ContactMessage"
+as permissive
+for select
+to authenticated
+using (( SELECT is_admin() AS is_admin));
+
+
+create policy "ContactMessage update policy"
+on "public"."ContactMessage"
+as permissive
+for update
+to authenticated
+using (( SELECT is_admin() AS is_admin))
+with check (( SELECT is_admin() AS is_admin));
+
+
+create policy "Event unified access policy"
 on "public"."Event"
 as permissive
 for all
-to authenticated
-using (is_admin())
-with check (is_admin());
-
-
-create policy "Public can read events"
-on "public"."Event"
-as permissive
-for select
 to public
-using (true);
+using (true)
+with check (((( SELECT auth.role() AS role) = 'authenticated'::text) AND ( SELECT is_admin() AS is_admin)));
 
 
-create policy "Admins can manage all registrations"
+create policy "Registration delete policy"
 on "public"."Registration"
 as permissive
-for all
+for delete
 to authenticated
-using (is_admin())
-with check (is_admin());
+using (( SELECT is_admin() AS is_admin));
 
 
-create policy "Public can read registrations"
-on "public"."Registration"
-as permissive
-for select
-to public
-using (true);
-
-
-create policy "Users can register for events"
+create policy "Registration insert policy"
 on "public"."Registration"
 as permissive
 for insert
 to authenticated
-with check (("userId" = auth.uid()));
+with check (((( SELECT auth.uid() AS uid) = "userId") OR ( SELECT is_admin() AS is_admin)));
 
 
-create policy "Admins can manage user badges"
-on "public"."UserBadge"
-as permissive
-for all
-to authenticated
-using (is_admin())
-with check (is_admin());
-
-
-create policy "Public can read user badges"
-on "public"."UserBadge"
+create policy "Registration read policy"
+on "public"."Registration"
 as permissive
 for select
 to public
 using (true);
 
 
-create policy "Admins can manage all profiles"
-on "public"."UserProfile"
+create policy "Registration update policy"
+on "public"."Registration"
+as permissive
+for update
+to authenticated
+using (( SELECT is_admin() AS is_admin))
+with check (( SELECT is_admin() AS is_admin));
+
+
+create policy "UserBadge unified access policy"
+on "public"."UserBadge"
 as permissive
 for all
-to authenticated
-using (is_admin())
-with check (is_admin());
+to public
+using (true)
+with check (((( SELECT auth.role() AS role) = 'authenticated'::text) AND ( SELECT is_admin() AS is_admin)));
 
 
-create policy "Public can read user profiles"
+create policy "Users can read their own profile optimized"
 on "public"."UserProfile"
 as permissive
 for select
 to public
-using (true);
+using ((( SELECT auth.uid() AS uid) = id));
 
 
-create policy "Users can manage own profile"
+create policy "Users can update their own profile optimized"
 on "public"."UserProfile"
 as permissive
-for all
-to authenticated
-using ((id = auth.uid()))
-with check ((id = auth.uid()));
+for update
+to public
+using ((( SELECT auth.uid() AS uid) = id));
 
 
-create policy "Admins can manage admin users"
+create policy "userAdmins unified access policy"
 on "public"."userAdmins"
 as permissive
 for all
 to authenticated
-using (is_admin())
-with check (is_admin());
-
-
-create policy "Users can view own admin status"
-on "public"."userAdmins"
-as permissive
-for select
-to authenticated
-using (("userId" = auth.uid()));
+using (((( SELECT auth.uid() AS uid) = "userId") OR ( SELECT is_admin() AS is_admin)))
+with check (( SELECT is_admin() AS is_admin));
 
 
 CREATE TRIGGER registration_changes_update_user_rating_trigger AFTER INSERT OR DELETE OR UPDATE ON public."Registration" FOR EACH ROW EXECUTE FUNCTION update_user_current_rating_from_registration();
