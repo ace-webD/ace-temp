@@ -60,16 +60,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >          <AuthProvider>
+        >
+          <AuthProvider>
             <Navbar />
             <main className="min-h-screen grow lg:pt-16">{children}</main>
             <FooterSection />

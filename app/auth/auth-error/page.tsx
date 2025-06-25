@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import {
   Card,
@@ -17,35 +17,26 @@ export default function AuthErrorPage() {
   const searchParams = useSearchParams();
   const errorCode = searchParams.get("errorCode");
   let title = "Authentication Error";
-  let message =
-    "An unexpected error occurred during the authentication process.";
-  if (typeof errorCode === "string") {
-    switch (errorCode) {
-      case "INVALID_EMAIL_DOMAIN":
-        title = "Invalid Email Domain";
-        message =
-          "Sorry, only email addresses from the '@sastra.ac.in' domain are permitted. Please use your SASTRA University email address to sign up or log in.";
-        break;
-      default:
-        title = "Authentication Error";
-        message =
-          "There was an error with the authentication process. Please try signing in again. If the problem persists, contact support.";
-    }
+  let message = "There was an error with the authentication process. Please try signing in again. If the problem persists, contact support.";
+  
+  if (typeof errorCode === "string" && errorCode === "INVALID_EMAIL_DOMAIN") {
+    title = "Invalid Email Domain";
+    message =
+      "Sorry, only email addresses from the '@sastra.ac.in' domain are permitted. Please use your SASTRA University email address to sign up or log in.";
   }
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4 text-slate-900 dark:text-slate-50">
-      <Card className="w-full max-w-lg bg-white/80 dark:bg-slate-800/70 border-slate-200 dark:border-slate-700 shadow-2xl backdrop-blur-md">
-        <CardHeader className="text-center border-b border-slate-200 dark:border-slate-700 pb-6">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <Card className="w-full max-w-lg">
+        <CardHeader className="text-center pb-6">
           <div className="flex justify-center mb-4">
-            <AlertTriangle className="w-20 h-20 text-red-500 dark:text-red-400 animate-pulse" />
+            <AlertTriangle className="w-20 h-20 text-red-500 animate-pulse" />
           </div>
-          <h1 className="text-2xl font-semibold text-red-600 dark:text-red-400 mt-2">
+          <h1 className="text-2xl font-semibold text-red-600 mt-2">
             {title}
           </h1>
         </CardHeader>
         <CardContent className="text-center py-8 px-6">
-          <p className="text-slate-600 dark:text-slate-300 text-md">
+          <p className="text-slate-600 text-md">
             {message}
           </p>
         </CardContent>{" "}
@@ -60,7 +51,7 @@ export default function AuthErrorPage() {
           </Button>
         </CardFooter>
       </Card>
-      <p className="mt-8 text-xs text-slate-400 dark:text-slate-600">
+      <p className="mt-8 text-xs text-slate-400">
         Error Code: {errorCode || "N/A"}
       </p>
     </div>

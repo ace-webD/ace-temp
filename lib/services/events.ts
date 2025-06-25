@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/client';
 import type { Tables } from '@/lib/supabase/database.types';
 
 export type SupabaseEvent = Tables<'Event'>;
@@ -14,7 +14,7 @@ export interface EventsResponse {
  */
 export async function fetchPastEvents(): Promise<EventsResponse> {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
     const { data, error } = await supabase
       .from('Event')
       .select('*')

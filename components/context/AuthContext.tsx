@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User, SupabaseClient } from '@supabase/supabase-js';
-import { Loader } from '@/components/ui/loader';
 
 interface AuthContextType {
   supabase: SupabaseClient;
