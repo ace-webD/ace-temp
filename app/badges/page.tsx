@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/client';
 import { Tables } from '@/lib/supabase/database.types';
 import BadgesClientView from './BadgesClientView';
 
@@ -7,7 +7,7 @@ type Badge = Tables<'Badge'> & {
 };
 
 async function fetchAndProcessBadges(): Promise<Badge[]> {
-  const supabase = await createClient();
+  const supabase = createClient();
   
   const { data, error } = await supabase
     .from('Badge')

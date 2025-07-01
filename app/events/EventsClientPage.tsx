@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { Timeline } from '@/components/ui/timeline';
 import { createClient } from '@/lib/supabase/client';
 import { formatEventDate, extractAvailableYears, filterEventsByYear } from '@/lib/utils/date';
-import type { SupabaseEvent } from '@/lib/services/events';
+import type { SupabaseEvent } from './page';
 
 interface TimelineEntry {
   title: React.ReactNode;

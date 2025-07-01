@@ -178,7 +178,7 @@ BEGIN
     
     SELECT EXISTS(
         SELECT 1 FROM public."UserProfile" 
-        WHERE id = target_user_id
+        WHERE "id" = target_user_id
     ) INTO profile_exists;
     
     IF NOT profile_exists THEN
@@ -258,13 +258,13 @@ BEGIN
   dept_code := substring(registration_number from 4 for 3);
   department_name := COALESCE(dept_map->>dept_code, 'Unknown Department');
   
-  -- Insert user profile
+  -- Insert user profile with properly quoted column names
   INSERT INTO public."UserProfile" (
-    id,
-    name,
-    registrationNumber,
-    year,
-    department
+    "id",
+    "name",
+    "registrationNumber",
+    "year",
+    "department"
   ) VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
@@ -333,9 +333,9 @@ AS $function$
 DECLARE
     target_user_id uuid;
 BEGIN
-    SELECT id INTO target_user_id 
+    SELECT "id" INTO target_user_id 
     FROM auth.users 
-    WHERE email = user_email;
+    WHERE "email" = user_email;
     
     IF target_user_id IS NULL THEN
         RAISE EXCEPTION 'User with email % not found', user_email;
@@ -353,25 +353,26 @@ $function$
 CREATE OR REPLACE FUNCTION public.update_user_current_rating_from_registration()
  RETURNS trigger
  LANGUAGE plpgsql
+ SECURITY DEFINER
  SET search_path TO ''
 AS $function$
 BEGIN
     IF (TG_OP = 'INSERT') THEN
-        IF NEW.points IS NOT NULL AND NEW.points <> 0 THEN
+        IF NEW."points" IS NOT NULL AND NEW."points" <> 0 THEN
             UPDATE public."UserProfile"
-            SET "currentRating" = "currentRating" + NEW.points
+            SET "currentRating" = "currentRating" + NEW."points"
             WHERE "id" = NEW."userId";
         END IF;
     ELSIF (TG_OP = 'UPDATE') THEN
-        IF NEW."userId" IS NOT NULL AND (COALESCE(OLD.points, 0) <> COALESCE(NEW.points, 0)) THEN
+        IF NEW."userId" IS NOT NULL AND (COALESCE(OLD."points", 0) <> COALESCE(NEW."points", 0)) THEN
             UPDATE public."UserProfile"
-            SET "currentRating" = "currentRating" + (COALESCE(NEW.points, 0) - COALESCE(OLD.points, 0))
+            SET "currentRating" = "currentRating" + (COALESCE(NEW."points", 0) - COALESCE(OLD."points", 0))
             WHERE "id" = NEW."userId";
         END IF;
     ELSIF (TG_OP = 'DELETE') THEN
-        IF OLD.points IS NOT NULL AND OLD.points <> 0 THEN
+        IF OLD."points" IS NOT NULL AND OLD."points" <> 0 THEN
             UPDATE public."UserProfile"
-            SET "currentRating" = "currentRating" - OLD.points
+            SET "currentRating" = "currentRating" - OLD."points"
             WHERE "id" = OLD."userId";
         END IF;
     END IF;
@@ -388,7 +389,7 @@ CREATE OR REPLACE FUNCTION public.validate_email_domain()
 AS $function$
 BEGIN
   -- Only allow @sastra.ac.in emails
-  IF NEW.email IS NULL OR NOT NEW.email LIKE '%@sastra.ac.in' THEN
+  IF NEW."email" IS NULL OR NOT NEW."email" LIKE '%@sastra.ac.in' THEN
     RAISE EXCEPTION 'Only @sastra.ac.in email addresses are allowed'
       USING HINT = 'Please use your SASTRA university email address';
   END IF;
@@ -799,20 +800,13 @@ using (true)
 with check (((( SELECT auth.role() AS role) = 'authenticated'::text) AND ( SELECT is_admin() AS is_admin)));
 
 
-create policy "Users can read their own profile optimized"
+create policy "UserProfile comprehensive access policy"
 on "public"."UserProfile"
 as permissive
-for select
+for all
 to public
-using ((( SELECT auth.uid() AS uid) = id));
-
-
-create policy "Users can update their own profile optimized"
-on "public"."UserProfile"
-as permissive
-for update
-to public
-using ((( SELECT auth.uid() AS uid) = id));
+using (((( SELECT auth.role() AS role) = 'anon'::text) OR (( SELECT auth.uid() AS uid) = id) OR ( SELECT is_admin() AS is_admin)))
+with check (((( SELECT auth.role() AS role) = 'authenticated'::text) AND ((( SELECT auth.uid() AS uid) = id) OR ( SELECT is_admin() AS is_admin))));
 
 
 create policy "userAdmins unified access policy"
@@ -863,5 +857,12 @@ to authenticated
 using (is_admin())
 with check (is_admin());
 
+
+
+revoke select on table "auth"."schema_migrations" from "postgres";
+
+CREATE TRIGGER create_profile_on_user_creation AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION create_user_profile_on_signup();
+
+CREATE TRIGGER validate_user_email BEFORE INSERT OR UPDATE ON auth.users FOR EACH ROW EXECUTE FUNCTION validate_email_domain();
 
 
