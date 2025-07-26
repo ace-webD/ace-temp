@@ -6,6 +6,7 @@ interface ClusterItem {
   title: string;
   description: string;
   imageUrl: string;
+  link: string;
 }
 
 const clusterData: ClusterItem[] = [
@@ -14,60 +15,71 @@ const clusterData: ClusterItem[] = [
         title: 'Web Development',
         description:
             'Dive into the world of web development by building dynamic and responsive websites. Enhance your skills in both front-end and back-end technologies while working on impactful projects that elevate ACE’s online presence.',
+         link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/AD.png',
         title: 'App Development',
         description:
             'Join the app development sub-cluster to create innovative mobile applications. Gain hands-on experience in designing and developing apps that solve real-world problems and contribute to ACE’s digital ecosystem.',
+        link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/AIML.png',
         title: 'AI ML',
         description:
             'Members will delve into the world of AI and ML, working on projects that involve data analysis, machine learning models, and AI applications. They will stay updated with the latest trends and advancements in the field.',
+        link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/cyber.png',
         title: 'Cybersecurity',
         description:
             'This sub-cluster is dedicated to understanding and implementing security measures to protect information systems. Members will learn about various cybersecurity practices, ethical hacking, and how to safeguard against cyber threats.',
+        
+        link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/Iot.png',
         title: 'IOT & Embedded Systems',
         description:
             'Members of this sub-cluster will explore the integration of hardware and software to build smart, connected systems. They will work on real-time data collection, sensor-based automation, and networked devices.',
+        link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/CP.png',
         title: 'Competitive Programming',
         description:
             'Members will engage in competitive programming, solving complex problems and participating in coding competitions. This sub-cluster aims to enhance problem-solving skills and algorithmic thinking.',
+        link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/GD.png',
         title: 'Graphic Designing',
         description:
             'This sub-cluster focuses on creating visually appealing graphics for posters and social media posts. Members will use their design skills to create engaging and informative visual content.',
+        link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/video.png',
         title: 'Video Editing',
         description:
             'Members will be responsible for editing videos for various ACE events and promotional materials. They will use their editing skills to create professional and engaging video content.',
+        link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/CW.png',
         title: 'Content Writing',
         description:
             "This sub-cluster focuses on writing content for various media, including blogs, social media posts, and promotional materials. Members will use their writing skills to convey ACE's message clearly and professionally.",
+        link:'https://spring.io/projects/spring-boot',
     },
     {
         imageUrl: '/images/Clusters/Opcon.png',
         title: 'OpCon',
         description:
             'Members of this sub-cluster will ensure that all events and activities run smoothly. They will be responsible for the logistical aspects of events, ensuring that everything is well-organized and executed efficiently.',
+        link:'https://spring.io/projects/spring-boot',
     },
 ];
 
