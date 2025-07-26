@@ -40,3 +40,4 @@ next-env.d.ts
 /Temp
 
 .vscode
+.env
