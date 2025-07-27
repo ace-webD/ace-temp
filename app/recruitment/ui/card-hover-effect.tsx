@@ -6,7 +6,7 @@ import { ClusterCard } from "./cluster-card";
 
 type Item = {
   title: string;
-  description: string;
+  description?: string;
   imageUrl: string;
   link?: string;
 };
@@ -18,19 +18,19 @@ export const HoverEffect = ({
   items: Item[];
   className?: string;
 }) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
     <div
       className={cn(
-        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+        "grid grid-cols-1",
         className
       )}
     >
       {items.map((item, idx) => {
-        const { title, link, imageUrl, description } = item;
+        const { title, link, imageUrl, description } = item; // Destructure for clarity
         const commonProps = {
-          className: "relative group block p-2 h-full w-full",
+          className: "relative group block p-2 cursor-pointer w-3/5 mx-auto ",
           onMouseEnter: () => setHoveredIndex(idx),
           onMouseLeave: () => setHoveredIndex(null),
         };
@@ -40,7 +40,7 @@ export const HoverEffect = ({
             <AnimatePresence>
               {hoveredIndex === idx && (
                 <motion.span
-                  className="absolute inset-0 h-full w-full bg-primary/10 dark:bg-primary/20 block rounded-3xl"
+                  className="absolute inset-0   w-full bg-primary/10 dark:bg-primary/20  rounded-3xl"
                   layoutId="hoverBackground"
                   initial={{ opacity: 0 }}
                   animate={{
@@ -58,27 +58,16 @@ export const HoverEffect = ({
               imageUrl={imageUrl}
               title={title}
               description={description}
+              link={link}
             />
           </>
         );
 
-return link ? (
-  <a
-    key={title}
-    href={link}
-    className="relative group block p-2 h-full w-full"
-  
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    {content}
-  </a>
-) : (
-  <div key={title} {...commonProps}>
-    {content}
-  </div>
-);
-
+        return (
+          <div key={title} {...commonProps}>
+            {content}
+          </div>
+        );
       })}
     </div>
   );

@@ -10,9 +10,7 @@ import { useRouter } from "next/navigation";
 export const HeroSection = () => {
   const { user, login } = useAuth();
   const router = useRouter();
-  const handleregistrationClick = () => {
-    router.push('/clusters');
-  }
+  
   const handleProfileClick = () => {
     if (user) {
       router.push(`/user/${user.id}`);
@@ -25,7 +23,7 @@ export const HeroSection = () => {
       <div className="grid place-items-center lg:max-w-(--breakpoint-xl) gap-8 mx-auto py-16 sm:py-24">
         <div className="text-center space-y-8">
            <div>
-        <Button onClick={handleregistrationClick}
+        <Button onClick={()=>router.push('/recruitment')}
           variant="outline"
           className="bg-green-500 text-white hover:bg-green-600 font-bold px-6 py-2 rounded-md"
         >

@@ -59,5 +59,22 @@
     "supabase": "^2.22.12",
     "tailwindcss": "^4.1.7",
     "typescript": "^5"
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohanRajRV/ace-temp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MohanRajRV/ace-temp/issues"
+  },
+  "homepage": "https://github.com/MohanRajRV/ace-temp#readme",
+  "description": ""
 }
