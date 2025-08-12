@@ -22,11 +22,14 @@ export function ClusterCard({ title, imageUrl, applyLink }: ClusterCardProps) {
       </div>
       <h3 className="text-white font-semibold text-lg text-center">{title}</h3>
       <Link
-        href={applyLink}
-        className="mt-4 inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+      href={applyLink}
+      target="_blank"
+      rel="noopener noreferrer"
+    className="mt-4 inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
       >
         Click to apply
       </Link>
+
     </div>
   );
 }

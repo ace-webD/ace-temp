@@ -76,7 +76,7 @@ const clusterData: ClusterItem[] = [
     },
     {
         imageUrl: '/images/Clusters/Opcon.png',
-        title: 'OpCon',
+        title: 'OpCon & PR',
         description:
             'Members of this sub-cluster will ensure that all events and activities run smoothly. They will be responsible for the logistical aspects of events, ensuring that everything is well-organized and executed efficiently.',
         

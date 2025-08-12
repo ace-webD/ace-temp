@@ -51,8 +51,7 @@ export const HoverEffect = ({
             <ClusterCard
               imageUrl={imageUrl}
               title={title}
-              description={description}
-              link={link}
+            link={link}
             />
           </div>
         );
