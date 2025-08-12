@@ -27,7 +27,7 @@ export const HeroSection = () => {
           variant="outline"
           className="bg-green-500 text-white hover:bg-green-600 font-bold px-6 py-2 rounded-md"
         >
-          🚀 CLICK HERE FOR THE REGISTRATION
+          🚀 APPLY FOR ACE 2025 RECRUITMENTS
         </Button>
       </div>
              

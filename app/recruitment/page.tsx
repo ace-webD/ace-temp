@@ -1,8 +1,4 @@
-
-
 import { ClusterCard } from "./ui/cluster-card";
-import { motion } from "framer-motion";
-import { HoverEffect } from '@/components/ui/card-hover-effect'; 
 
 const domains = [
   {
@@ -33,7 +29,7 @@ const domains = [
   {
     title: "Competitive Programming",
     imageUrl: "/images/Clusters/cp.png",
-    applyLink: "https://www.youtube.com/",
+    applyLink: "https://forms.gle/ihwKWsq7LL2czw9v5",
   },
      {
     title: "OpCon & PR",
@@ -48,26 +44,15 @@ const domains = [
   {
     title: "Video Editing",
     imageUrl: "/images/Clusters/video.png",
-    applyLink: "https://www.youtube.com/",
+    applyLink: "https://forms.gle/bvFhh2aMJS4EoR3G8",
   },
   {
     title: "Content Writing",
     imageUrl: "/images/Clusters/cw.png",
-    applyLink: "https://www.youtube.com/",
+    applyLink: "https://docs.google.com/forms/d/e/1FAIpQLSfkyKaui4LbPIAHm15yAPs4AopoPutPOdhUJxNGSHc5F6ofmQ/viewform",
   },
  
 ];
-const hoverEffectContainerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: 0.4, 
-        duration: 0.5,
-      },
-    },
-  };
 export default function RecruitPage() {
   return (
     <main className="min-h-screen bg-[#07152A] py-12 px-6">
