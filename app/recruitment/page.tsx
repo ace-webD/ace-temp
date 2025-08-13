@@ -23,12 +23,12 @@ const domains = [
   },
   {
     title: "IOT & Embedded Systems",
-    imageUrl: "/images/Clusters/iot.png",
+    imageUrl: "/images/Clusters/Iot.png",
     applyLink: "https://docs.google.com/forms/d/e/1FAIpQLScDnQJB2lNlKIbYA1Q4so9ztf2FgIdFvY43o6mqCKKRpsGl_A/viewform?usp=header",
   },
   {
     title: "Competitive Programming",
-    imageUrl: "/images/Clusters/cp.png",
+    imageUrl: "/images/Clusters/CP.png",
     applyLink: "https://forms.gle/ihwKWsq7LL2czw9v5",
   },
      {
@@ -48,7 +48,7 @@ const domains = [
   },
   {
     title: "Content Writing",
-    imageUrl: "/images/Clusters/cw.png",
+    imageUrl: "/images/Clusters/CW.png",
     applyLink: "https://docs.google.com/forms/d/e/1FAIpQLSfkyKaui4LbPIAHm15yAPs4AopoPutPOdhUJxNGSHc5F6ofmQ/viewform",
   },
  
