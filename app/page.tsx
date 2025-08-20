@@ -5,7 +5,6 @@ import { PrinciplesSection } from "@/components/layout/sections/principles";
 import { HeroSection } from "@/components/layout/sections/hero";
 import { AboutSection } from "@/components/layout/sections/about";
 import { TeamSection } from "@/components/layout/sections/team";
-import HeroWithConfetti from "@/components/confetti/HeroWithConfetti";
 export const metadata = {
   title: "ACE - Sastra",
   description: "At ACE, our mission is to create an exciting and collaborative environment within the School of Computing. ",
@@ -14,7 +13,6 @@ export const metadata = {
 export default function Home() {
   return (
     <>
-      <HeroWithConfetti/>
       <HeroSection />
       <AboutSection />
       <MissionSection />
