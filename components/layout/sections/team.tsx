@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import GmailIcon from "@/components/icons/GmailIcon";
 interface TeamProps {
   imageUrl: string;
   firstName: string;
@@ -42,6 +43,10 @@ export const TeamSection = () => {
           name: "Instagram",
           url: "https://www.instagram.com/gss.ayswar?igsh=MWF4OHl2MDEwMnV4dg==",
         },
+        //  {
+        //   name: "Gmail",
+        //   url: "https://mail.google.com/mail/?view=cm&to=generalsecretary.ace@gmail.com", 
+        // },
       ],
     },
     {
@@ -58,6 +63,10 @@ export const TeamSection = () => {
           name: "Github",
           url: "https://github.com/Client0-0",
         },
+        {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=generalsecretary.ace@gmail.com", 
+        },
       ],
     },
     {
@@ -73,11 +82,15 @@ export const TeamSection = () => {
         {
           name: "Github",
           url: "https://github.com/Srihari-1501",
-        },{
+        },
+        {
           name: "Instagram",
           url: "https://www.instagram.com/srihari.ilango/profilecard/?igsh=dHFjems1YnBnNTY3",
-         
-        }
+        },
+         {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=treasurer.ace25@gmail.com", 
+        },
       ],
     },
     {
@@ -97,6 +110,10 @@ export const TeamSection = () => {
         {
           name: "Instagram",
           url: "https://www.instagram.com/eaishwar_011?igsh=MXJnazltYzVjMXR4cw==",
+        },
+         {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=organisingsecretary.ace@gmail.com", 
         },
       ],
     },
@@ -118,6 +135,10 @@ export const TeamSection = () => {
           name: "Instagram",
           url: " https://www.instagram.com/tejasaa_/",
         },
+         {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=creativemediahead.ace@gmail.com", 
+        },
       ],
     },
     {
@@ -137,6 +158,10 @@ export const TeamSection = () => {
          {
           name: "Instagram",
           url: "https://instagram.com/aviator.yash.27?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D",
+        },
+         {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=technicalhead.ace@gmail.com", 
         },        
       ],
     },
@@ -149,6 +174,8 @@ export const TeamSection = () => {
         return <GithubIcon />;
       case "Instagram":
         return <InstagramIcon />;
+      case "Gmail":
+        return <GmailIcon />
     }
   };
   return (
