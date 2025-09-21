@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import GmailIcon from "@/components/icons/GmailIcon";
 interface TeamProps {
   imageUrl: string;
   firstName: string;
@@ -24,135 +25,11 @@ interface SocialNetworkProps {
 }
 export const TeamSection = () => {
   const teamList: TeamProps[] = [
-    {
-      imageUrl: "/images/leads/Tulip raaj.jpg",
-      firstName: "Tulip",
-      lastName: "Raaj",
-      positions: ["President"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/tulip-raaj-k-405400239",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/Tulipraaj",
-        },
-        {
-          name: "Instagram",
-          url: "https://www.instagram.com/_.tulipraaj007._/",
-        },
-      ],
-    },
-    {
-      imageUrl: "/images/leads/Ananya C.jpg",
-      firstName: "Ananya",
-      lastName: "Chandrasekaran",
-      positions: ["General Secretary"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/ananya-chandrasekaran",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/ananya-chandrasekaran03",
-        },
-      ],
-    },
-    {
-      imageUrl: "/images/leads/Rengasayee.jpeg",
-      firstName: "Srinivasa",
-      lastName: "Rengasayee",
-      positions: ["Treasurer"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/srinivasa-rengasayee-r-185072235?trk=contact-info",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/rengasayee",
-        },
-      ],
-    },
-    {
-      imageUrl: "/images/leads/Tharun S K.jpg",
-      firstName: "Tharun",
-      lastName: "Senthil Kumar",
-      positions: ["Organizing secretary"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/tharun-s-k-bab26b248",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/Tharun-Senthilkumar",
-        },
-        {
-          name: "Instagram",
-          url: "https://www.instagram.com/_tharun.sk._?igsh=eThobXNxdGs1YTli",
-        },
-      ],
-    },
-    {
-      imageUrl: "/images/leads/ShinyGrace.jpg",
-      firstName: "Shiny",
-      lastName: "Grace",
-      positions: ["Creative head"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/shiny-grace-975a72246/",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/shinygrace/",
-        },
-      ],
-    },
-    {
-      imageUrl: "/images/leads/SherlinPreethiJ.jpg",
-      firstName: "Sherlin",
-      lastName: "Preethi",
-      positions: ["Technical head"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/sherlin-preethi-2958a5244/",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/Sherlin-Preethi",
-        },
-      ],
-    },
-    {
-      imageUrl: "/images/leads/Naveen Kumar.jpg",
-      firstName: "Naveen",
-      lastName: "Kumar",
-      positions: ["Public relations officer"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/naveen-kumar-444920243",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/NaveenKumar16-git",
-        },
-        {
-          name: "Instagram",
-          url: "https://www.instagram.com/_naveen._.nk?igsh=aDRzaWNlYnlhc3Ny",
-        },
-      ],
-    },
-    {
+   {
       imageUrl: "/images/leads/Ayswar.jpg",
       firstName: "Ayswar",
       lastName: "GSS",
-      positions: ["Vice President"],
+      positions: ["President"],
       socialNetworks: [
         {
           name: "LinkedIn",
@@ -166,22 +43,126 @@ export const TeamSection = () => {
           name: "Instagram",
           url: "https://www.instagram.com/gss.ayswar?igsh=MWF4OHl2MDEwMnV4dg==",
         },
+        //  {
+        //   name: "Gmail",
+        //   url: "https://mail.google.com/mail/?view=cm&to=generalsecretary.ace@gmail.com", 
+        // },
       ],
     },
     {
-      imageUrl: "/images/leads/Madahesh.jpg",
-      firstName: "Madahesh",
+      imageUrl: "/images/CORE/Madahesh.jpg",
+      firstName: "Madhaesh",
       lastName: "Parasuraman",
-      positions: ["Vice General Secretary"],
+      positions: ["General Secretary"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "http://linkedin.com/in/madhaesh-parasuraman-93a42824a/",
+          url: "https://www.linkedin.com/in/madhaesh-parasuraman-93a42824a",
         },
         {
           name: "Github",
-          url: "https://github.com/StarBuckAce",
+          url: "https://github.com/Client0-0",
         },
+        {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=generalsecretary.ace@gmail.com", 
+        },
+      ],
+    },
+    {
+      imageUrl: "/images/CORE/Srihari_i_Treasurer.jpg",
+      firstName: "Srihari",
+      lastName: "I",
+      positions: ["Treasurer"],
+      socialNetworks: [
+        {
+          name: "LinkedIn",
+          url: " https://www.linkedin.com/in/srihari1501",
+        },
+        {
+          name: "Github",
+          url: "https://github.com/Srihari-1501",
+        },
+        {
+          name: "Instagram",
+          url: "https://www.instagram.com/srihari.ilango/profilecard/?igsh=dHFjems1YnBnNTY3",
+        },
+         {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=treasurer.ace25@gmail.com", 
+        },
+      ],
+    },
+    {
+      imageUrl: "/images/CORE/Gss_Eaishwar_Organising_Secretary.jpg",
+      firstName: "Eaishwar",
+      lastName: "GSS",
+      positions: ["Organizing secretary"],
+      socialNetworks: [
+        {
+          name: "LinkedIn",
+          url: "https://www.linkedin.com/in/eaishwar-gss-315a4a284",
+        },
+        {
+          name: "Github",
+          url: "https://github.com/Easihwar011",
+        },
+        {
+          name: "Instagram",
+          url: "https://www.instagram.com/eaishwar_011?igsh=MXJnazltYzVjMXR4cw==",
+        },
+         {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=organisingsecretary.ace@gmail.com", 
+        },
+      ],
+    },
+    {
+      imageUrl: "/images/CORE/Tejaswini_Creative_Head.jpg",
+      firstName: "Tejaswini",
+      lastName: "",
+      positions: ["Creative head"],
+      socialNetworks: [
+        {
+          name: "LinkedIn",
+          url: "https://www.linkedin.com/in/tejaswini-kirti/",
+        },
+        {
+          name: "Github",
+          url: "https://github.com/mistbik",
+        },
+        {
+          name: "Instagram",
+          url: " https://www.instagram.com/tejasaa_/",
+        },
+         {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=creativemediahead.ace@gmail.com", 
+        },
+      ],
+    },
+    {
+      imageUrl: "/images/CORE/Yashwenth_S_Technical_Head.jpg",
+      firstName: "Yashwenth",
+      lastName: "S",
+      positions: ["Technical head"],
+      socialNetworks: [
+        {
+          name: "LinkedIn",
+          url: "https://www.linkedin.com/in/its-yashwenth/",
+        },
+        {
+          name: "Github",
+          url: "https://github.com/Yashwenth27",
+        },
+         {
+          name: "Instagram",
+          url: "https://instagram.com/aviator.yash.27?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D",
+        },
+         {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=technicalhead.ace@gmail.com", 
+        },        
       ],
     },
   ];
@@ -193,6 +174,8 @@ export const TeamSection = () => {
         return <GithubIcon />;
       case "Instagram":
         return <InstagramIcon />;
+      case "Gmail":
+        return <GmailIcon />
     }
   };
   return (
