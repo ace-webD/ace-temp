@@ -178,13 +178,13 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
   const imageContainerClass = isEventCompleted ? "aspect-video" : "aspect-4/5";
 
   const renderActionButton = () => {
-    if (!authUser) {
-      return <Button onClick={login} className="w-full md:w-auto">Login to Register</Button>;
-    }
+    // if (!authUser) {
+    //   return <Button onClick={login} className="w-full md:w-auto">Login to Register</Button>;
+    // }
 
-    if (isRegistered) {
-      return <Button disabled className="w-full md:w-auto">Already Registered</Button>;
-    }
+    // if (isRegistered) {
+    //   return <Button disabled className="w-full md:w-auto">Already Registered</Button>;
+    // }
 
     if (isEventCompleted) {
       return <Button disabled className="w-full md:w-auto">Event Completed</Button>;
@@ -195,9 +195,14 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
     }
 
     return (
-      <Button onClick={handleRegister} disabled={isSubmitting} className="w-full md:w-auto">
-        {isSubmitting ? <Loader /> : 'Register for Event'}
-      </Button>
+      <Link href={"https://docs.google.com/forms/d/e/1FAIpQLSemRLCOx5R3XFRKq0GIwbA9HuYhIqsD_Yl9fk0o34ehVUfrSA/viewform"} target="_blank" className="w-full md:w-auto">
+        {/* <Button onClick={handleRegister} disabled={isSubmitting} className="w-full md:w-auto">
+          {isSubmitting ? <Loader /> : 'Register for Event'}
+        </Button> */}
+        <Button className="w-full md:w-auto">
+          Register for Event
+        </Button>
+      </Link>
     );
   };
 
