@@ -195,7 +195,7 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
     }
 
     return (
-      <Link href={"https://docs.google.com/forms/d/e/1FAIpQLSemRLCOx5R3XFRKq0GIwbA9HuYhIqsD_Yl9fk0o34ehVUfrSA/viewform"} target="_blank" className="w-full md:w-auto">
+      <Link href={"https://docs.google.com/forms/d/e/1FAIpQLSfdMp0IbymLZdIOaTZ4a5aWaJsDS6iPi6okXhuajl9tz4QZ6g/viewform?usp=send_form"} target="_blank" className="w-full md:w-auto">
         {/* <Button onClick={handleRegister} disabled={isSubmitting} className="w-full md:w-auto">
           {isSubmitting ? <Loader /> : 'Register for Event'}
         </Button> */}
@@ -310,7 +310,7 @@ export default function EventDetailClient({ initialEvent, initialParticipants, e
           )}
         </div>
 
-        {renderParticipantsList()}
+        {/* {renderParticipantsList()} */}
       </div>
 
       {/* Contact Modal */}
