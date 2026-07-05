@@ -19,7 +19,7 @@ interface EventsClientPageProps {
   errorFetching?: string | null;
 }
 
-// Extracted EventContent component for better performance
+
 interface EventContentProps {
   event: SupabaseEvent;
   storageUrl: (imgUrl: string) => string;
@@ -65,24 +65,24 @@ EventContent.displayName = 'EventContent';
 export default function EventsClientPage({ initialEvents, errorFetching }: EventsClientPageProps) {
   const supabaseClient = createClient();
   
-  // Extract available years from events
+        
   const availableYears = useMemo(() => 
     extractAvailableYears(initialEvents), 
     [initialEvents]
   );
 
-  // Set default year to the latest available year
+  
   const [selectedYear, setSelectedYear] = useState<number | null>(() => 
     availableYears[0] || null
   );
 
-  // Filter events by selected year
+  
   const displayEvents = useMemo(() => 
     filterEventsByYear(initialEvents, selectedYear), 
     [initialEvents, selectedYear]
   );
 
-  // Memoize storage instance for better performance
+ 
   const storageUrl = useCallback((imgUrl: string) => 
     supabaseClient.storage.from('event-images').getPublicUrl(imgUrl).data.publicUrl,
     [supabaseClient.storage]
