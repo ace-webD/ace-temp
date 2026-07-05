@@ -183,7 +183,7 @@ const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
               {/* PRICE DISPLAY */}
               {event.registrationFee && event.registrationFee > 0 && (
                 <p className="flex items-center gap-2 pt-2 border-t border-muted font-semibold text-foreground">
-                  <DollarSign className="h-4 w-4 text-primary shrink-0" />
+                  
                   ₹{event.registrationFee}
                 </p>
               )}
