@@ -10,11 +10,13 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatEventDate } from '@/lib/utils/date';
 import { PaymentModal } from '@/components/PaymentModal';
+import { FeedbackModal } from '@/components/events/FeedbackModal';
 
 type SupabaseEvent = Tables<'Event'> & {
   type: Enums<'EventType'>;
   registrationFee?: number | null;
   isFeeRequired?: boolean | null;
+  endTime?: string | null;
 };
 
 const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
@@ -24,6 +26,7 @@ const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
   const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -49,6 +52,12 @@ const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
 
   const formattedStartTime = event.startTime ? formatEventDateTime(event.startTime) : undefined;
 
+  // NEW: check if the event has ended (feedback only after end)
+  const isEventOver = () => {
+    if (!event.endTime) return false;
+    return new Date() > new Date(event.endTime);
+  };
+
   const typeBadgeClasses = {
     CONTEST: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
     WORKSHOP: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
@@ -72,7 +81,6 @@ const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
     try {
       setIsRegistering(true);
 
-      // Check if already registered
       const { data: existingReg, error: checkError } = await supabaseClient
         .from('Registration')
         .select('id')
@@ -183,7 +191,6 @@ const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
               {/* PRICE DISPLAY */}
               {event.registrationFee && event.registrationFee > 0 && (
                 <p className="flex items-center gap-2 pt-2 border-t border-muted font-semibold text-foreground">
-                  
                   ₹{event.registrationFee}
                 </p>
               )}
@@ -215,15 +222,32 @@ const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
               )}
             </div>
 
-            {/* REGISTER BUTTON */}
-            <Button
-              onClick={handleRegisterClick}
-              disabled={isRegistering}
-              className="w-full bg-primary hover:bg-primary/90"
-              size="lg"
-            >
-              {isRegistering ? 'Registering...' : 'Register Now'}
-            </Button>
+            {/* REGISTER or FEEDBACK BUTTON */}
+            {isEventOver() ? (
+              <Button
+                onClick={() => {
+                  if (!currentUser) {
+                    alert('Please login to give feedback');
+                    return;
+                  }
+                  setShowFeedbackModal(true);
+                }}
+                variant="outline"
+                className="w-full"
+                size="lg"
+              >
+                Give Feedback
+              </Button>
+            ) : (
+              <Button
+                onClick={handleRegisterClick}
+                disabled={isRegistering}
+                className="w-full bg-primary hover:bg-primary/90"
+                size="lg"
+              >
+                {isRegistering ? 'Registering...' : 'Register Now'}
+              </Button>
+            )}
           </div>
         </Card>
       </motion.div>
@@ -239,6 +263,16 @@ const UpcomingEventItem = ({ event }: { event: SupabaseEvent }) => {
           userName={currentUser.user_metadata?.name || currentUser.email}
           userEmail={currentUser.email || ''}
           onClose={() => setShowPaymentModal(false)}
+        />
+      )}
+
+      {/* FEEDBACK MODAL */}
+      {showFeedbackModal && currentUser && (
+        <FeedbackModal
+          eventId={event.id}
+          userId={currentUser.id}
+          eventName={event.name || 'Event'}
+          onClose={() => setShowFeedbackModal(false)}
         />
       )}
     </>
