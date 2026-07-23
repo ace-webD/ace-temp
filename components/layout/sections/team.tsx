@@ -2,6 +2,7 @@ import GithubIcon from "@/components/icons/GithubIcon";
 import LinkedInIcon from "@/components/icons/LinkedInIcon";
 import InstagramIcon from "@/components/icons/InstagramIcon";
 
+
 import {
   Card,
   CardContent,
@@ -13,7 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import GmailIcon from "@/components/icons/GmailIcon";
 interface TeamProps {
-  imageUrl: string;
+  imageUrl?: string;
   firstName: string;
   lastName: string;
   positions: string[];
@@ -25,144 +26,161 @@ interface SocialNetworkProps {
 }
 export const TeamSection = () => {
   const teamList: TeamProps[] = [
-   {
-      imageUrl: "/images/leads/Ayswar.jpg",
-      firstName: "Ayswar",
-      lastName: "GSS",
+    {
+      imageUrl: "/images/CORE/Sruthi_Keerthi_President.jpg",
+      firstName: "Sruthi Keerthi",
+      lastName: "Mailari",
       positions: ["President"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://linkedin.com/in/gssayswar",
+          url: "https://www.linkedin.com/in/mailari-sruthi-keerthi-46a16a29a/",
         },
         {
-          name: "Github",
-          url: "https://github.com/ayswar-gss-code",
+          name: "GitHub",
+          url: "https://github.com/SruthiKeerthi05",
         },
         {
           name: "Instagram",
-          url: "https://www.instagram.com/gss.ayswar?igsh=MWF4OHl2MDEwMnV4dg==",
+          url: "https://www.instagram.com/sk_killer__000",
         },
-        //  {
-        //   name: "Gmail",
-        //   url: "https://mail.google.com/mail/?view=cm&to=generalsecretary.ace@gmail.com", 
-        // },
+        {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=msruthi5505@gmail.com",
+        },
       ],
     },
     {
-      imageUrl: "/images/CORE/Madahesh.jpg",
-      firstName: "Madhaesh",
-      lastName: "Parasuraman",
+      imageUrl: "/images/CORE/RasswanthGPN_GeneralSecretary.jpg",
+      firstName: "Rasswanth",
+      lastName: "GPN",
       positions: ["General Secretary"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/in/madhaesh-parasuraman-93a42824a",
+          url: "https://www.linkedin.com/in/rasswanth-gpn-57a1b3273/",
         },
         {
           name: "Github",
-          url: "https://github.com/Client0-0",
+          url: "https://github.com/ras-07",
+        },
+        {
+          name: "Instagram",
+          url: "https://www.instagram.com/rasswanth__07",
         },
         {
           name: "Gmail",
-          url: "https://mail.google.com/mail/?view=cm&to=generalsecretary.ace@gmail.com", 
+          url: "https://mail.google.com/mail/?view=cm&to=rasswanthgpn07@gmail.com",
         },
       ],
     },
     {
-      imageUrl: "/images/CORE/Srihari_i_Treasurer.jpg",
-      firstName: "Srihari",
-      lastName: "I",
+      imageUrl: "/images/CORE/Someshwar_S_Project_Lead.jpg",
+      firstName: "Someshwar",
+      lastName: "S",
+      positions: ["Project Lead"],
+      socialNetworks: [
+        {
+          name: "LinkedIn",
+          url: "https://www.linkedin.com/in/soms36/",
+        },
+        {
+          name: "Github",
+          url: "https://github.com/soms36-DefSec/",
+        },
+        {
+          name: "Instagram",
+          url: "https://www.instagram.com/somesh_36/",
+        },
+        {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=someshsuresh0306@gmail.com",
+        },
+      ],
+    },
+    {
+      imageUrl: "/images/CORE/Chandresh.webp",
+      firstName: "Chandresh",
+      lastName: "J",
+      positions: ["Technical Head"],
+      socialNetworks: [
+        {
+          name: "LinkedIn",
+          url: "https://www.linkedin.com/in/chandresh-j-8288302a8/",
+        },
+        {
+          name: "Github",
+          url: "https://github.com/CHANDRESH0503",
+        },
+      
+        {
+          name: "Gmail",
+          url: "https://mail.google.com/mail/?view=cm&to=jchandresh05@gmail.com",
+        },
+      ],
+    },
+    {
+      imageUrl: "/images/CORE/PALANIAPPAN.S.png",
+      firstName: "Palaniappan",
+      lastName: "S",
       positions: ["Treasurer"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: " https://www.linkedin.com/in/srihari1501",
+          url: "https://www.linkedin.com/in/coeuspalani",
         },
         {
           name: "Github",
-          url: "https://github.com/Srihari-1501",
+          url: "https://github.com/coeuspalani",
         },
         {
           name: "Instagram",
-          url: "https://www.instagram.com/srihari.ilango/profilecard/?igsh=dHFjems1YnBnNTY3",
+          url: "https://www.instagram.com/coeus_palani",
         },
-         {
+        {
           name: "Gmail",
-          url: "https://mail.google.com/mail/?view=cm&to=treasurer.ace25@gmail.com", 
+          url: "https://mail.google.com/mail/?view=cm&to=palani232006@gmail.com",
         },
       ],
     },
     {
-      imageUrl: "/images/CORE/Gss_Eaishwar_Organising_Secretary.jpg",
-      firstName: "Eaishwar",
-      lastName: "GSS",
-      positions: ["Organizing secretary"],
+      imageUrl: "/images/CORE/Pranathi-Kankati.jpeg",
+      firstName: "Pranathi",
+      lastName: "Kankati",
+      positions: ["Creative Media Head"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/in/eaishwar-gss-315a4a284",
+          url: "https://www.linkedin.com/in/kankatipranathi-a9667a330/",
         },
         {
           name: "Github",
-          url: "https://github.com/Easihwar011",
+          url: "https://github.com/pranathikankati",
         },
         {
           name: "Instagram",
-          url: "https://www.instagram.com/eaishwar_011?igsh=MXJnazltYzVjMXR4cw==",
+          url: "https://www.instagram.com/pranathiiii_03",
         },
-         {
+        {
           name: "Gmail",
-          url: "https://mail.google.com/mail/?view=cm&to=organisingsecretary.ace@gmail.com", 
+          url: "https://mail.google.com/mail/?view=cm&to=pranathikankati0312@gmail.com",
         },
       ],
     },
     {
-      imageUrl: "/images/CORE/Tejaswini_Creative_Head.jpg",
-      firstName: "Tejaswini",
-      lastName: "",
-      positions: ["Creative head"],
+      imageUrl: "/images/CORE/Rohith_J_Organizing_Secretary.jpg",
+      firstName: "Rohith",
+      lastName: "Jayaraman",
+      positions: ["Organizing Secretary"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/in/tejaswini-kirti/",
+          url: "https://www.linkedin.com/in/rohith-jayaraman-b-3b14a6300/",
         },
         {
-          name: "Github",
-          url: "https://github.com/mistbik",
-        },
-        {
-          name: "Instagram",
-          url: " https://www.instagram.com/tejasaa_/",
-        },
-         {
           name: "Gmail",
-          url: "https://mail.google.com/mail/?view=cm&to=creativemediahead.ace@gmail.com", 
+          url: "https://mail.google.com/mail/?view=cm&to=rohithjayaramanb@gmail.com",
         },
-      ],
-    },
-    {
-      imageUrl: "/images/CORE/Yashwenth_S_Technical_Head.jpg",
-      firstName: "Yashwenth",
-      lastName: "S",
-      positions: ["Technical head"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/its-yashwenth/",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/Yashwenth27",
-        },
-         {
-          name: "Instagram",
-          url: "https://instagram.com/aviator.yash.27?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D",
-        },
-         {
-          name: "Gmail",
-          url: "https://mail.google.com/mail/?view=cm&to=technicalhead.ace@gmail.com", 
-        },        
       ],
     },
   ];
@@ -174,8 +192,9 @@ export const TeamSection = () => {
         return <GithubIcon />;
       case "Instagram":
         return <InstagramIcon />;
+      
       case "Gmail":
-        return <GmailIcon />
+        return <GmailIcon />;
     }
   };
   return (
@@ -193,21 +212,28 @@ export const TeamSection = () => {
         {teamList.map(
           (
             { imageUrl, firstName, lastName, positions, socialNetworks },
-            index
+            index,
           ) => (
             <Card
               key={index}
               className="bg-muted/60 dark:bg-card flex flex-col h-full overflow-hidden group/hoverimg w-72"
             >
               <CardHeader className="p-0 gap-0">
-                <div className="h-full overflow-hidden">
-                  <Image
-                    src={imageUrl}
-                    alt={`${firstName} ${lastName}`}
-                    width={300}
-                    height={300}
-                    className="w-full aspect-square object-cover saturate-0 transition-all duration-200 ease-linear size-full group-hover/hoverimg:saturate-100 group-hover/hoverimg:scale-[1.01]"
-                  />
+                <div className="aspect-square w-full overflow-hidden bg-primary/10">
+                  {imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt={`${firstName} ${lastName}`}
+                      width={300}
+                      height={300}
+                      className="h-full w-full object-cover saturate-0 transition-all duration-200 ease-linear group-hover/hoverimg:saturate-100 group-hover/hoverimg:scale-[1.01]"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-5xl font-bold text-primary">
+                      {firstName.charAt(0)}
+                      {lastName.charAt(0)}
+                    </div>
+                  )}
                 </div>
                 <CardTitle className="py-6 pb-4 px-6 text-xl">
                   {firstName}
@@ -233,7 +259,7 @@ export const TeamSection = () => {
                 ))}
               </CardFooter>
             </Card>
-          )
+          ),
         )}
       </div>
     </section>
