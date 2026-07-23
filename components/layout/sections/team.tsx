@@ -37,7 +37,7 @@ export const TeamSection = () => {
           url: "https://www.linkedin.com/in/mailari-sruthi-keerthi-46a16a29a/",
         },
         {
-          name: "Github",
+          name: "GitHub",
           url: "https://github.com/SruthiKeerthi05",
         },
         {
