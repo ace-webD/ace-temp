@@ -65,7 +65,7 @@ const centerRouteList: RouteProps[] = [
   { href: "/events", label: "Events" },
   { href: "/events/upcoming", label: "Upcoming" },
   { href: "/badges", label: "Badges" },
-  { href:"/events/recruitment",label:"Recruitment"}
+  // { href:"/events/recruitment",label:"Recruitment"}
 ];
 
 export const Navbar = () => {

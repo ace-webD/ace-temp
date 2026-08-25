@@ -22,14 +22,14 @@ export const HeroSection = () => {
     <section className="container">
       <div className="grid place-items-center lg:max-w-(--breakpoint-xl) gap-8 mx-auto py-16 sm:py-24">
         <div className="text-center space-y-8">
-           <div>
+           {/* <div>
         <Button onClick={()=>router.push('/events/recruitment')}
           variant="outline"
           className="bg-green-500 text-white hover:bg-green-600 font-bold px-6 py-2 rounded-md"
         >
           🚀 APPLY FOR ACE 2026 RECRUITMENTS
         </Button>
-      </div>
+      </div> */}
           <div className="max-w-(--breakpoint-md) mx-auto text-center text-4xl md:text-6xl font-bold break-words">
             <h1>
               Association of
