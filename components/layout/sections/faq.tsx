@@ -14,7 +14,7 @@ interface FAQProps {
 const FAQList: FAQProps[] = [
   {
     question: "Who can join the Association of Computing Engineers?",
-    answer: "ACE is open to 1st,2nd and 3rd year students enrolled in the School of Computing.",
+    answer: "ACE is open to 1st(only for non-tech cluster),2nd and 3rd year students enrolled in the School of Computing.",
     value: "item-1",
   },
   {
