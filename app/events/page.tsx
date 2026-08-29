@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import EventsClientPage from './EventsClientPage'; 
 import { fetchPastEvents } from '@/lib/services/events';
 
